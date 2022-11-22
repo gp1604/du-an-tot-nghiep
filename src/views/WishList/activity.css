@@ -1,0 +1,67 @@
+.activity {
+    background-color: #f2f6fc;
+    color: white;
+    margin-top: 5px;
+    height: 50em;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.activity .activity-title {
+    padding-top: 50px;
+    font-size: 36px;
+    font-weight: 600;
+}
+
+.activity .account-balance {
+    padding-top: 20px;
+}
+
+.activity .balance {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity .activity-content .activity-decription {
+    padding-top: 30px;
+    margin-bottom: 50px;
+    padding-bottom: 70px;
+}
+.activity .activity-content {
+    background-color: rgb(11, 20, 38);
+    padding-bottom: 50px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.activity .balance .activity-money {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.activity .activity-history {
+    margin-top: -150px;
+    background-color: transparent;
+}
+.activity .activity-history .activity-table {
+    background: white;
+}
+
+.activity .activity-history .btn-add-product {
+    color: white;
+    border: none;
+    border-radius: 0% !important;
+    border-bottom: 2px solid #1565c0;
+    margin-left: 20px;
+}
+.activity .form-input-add-product {
+    margin: 10px 0;
+}
+.activity .form-add-product {
+    border: 1px solid #dddd;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: inset;
+}

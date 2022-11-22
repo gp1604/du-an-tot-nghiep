@@ -1,0 +1,40 @@
+@media(min-width: 0px) and (max-width: 320px  ) {
+    .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiButtonBase-root{
+        display: none;
+    }
+}
+ 
+
+@media(min-width: 320px) and (max-width: 768px  ) {
+    .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiButtonBase-root{
+        display: none;
+    }
+
+    /* .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiButtonBase-root{
+        display: none;
+    } */
+}
+
+
+
+@media(min-width: 768px) and (max-width: 1024px  ) {
+    .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiButtonBase-root{
+        display: none;
+    }
+
+    .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiBox-root{
+        display: block;
+    }
+
+}
+
+
+@media(min-width: 1024px ) {
+    .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiButtonBase-root{
+        display: block;
+    }
+
+    .MuiPaper-root .MuiGrid-root .MuiGrid-root .MuiBox-root{
+        display: none;
+    }
+}

@@ -1,0 +1,811 @@
+ <Box sx={{ width: '100%', mt: 2 }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                    {data && data.map((item, index) => (
+                        <Grid item xs={6} key={index} >
+                            <div style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'row', padding: '10px' }}>
+                                <div style={{ width: '46%' }}>
+                                    <img style={{ width: '100%', border: '1px solid #ddd' }} src="https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg" alt="" />
+                                </div>
+                                <div style={{ width: '46%', marginLeft: '4%' }}>
+                                    <p>Đường:  {item.street}</p>
+                                    <p>Thành Phố: {item.city} </p>
+                                    <p>Mô tả: {item.description}</p>
+
+                                    <Button onClick={() => handleOpen(item.id)} variant="contained" color="success">
+                                        View more
+                                    </Button>
+                                    {/* 
+                                    {item.product.length > 0 ? item.product.map((itemDetail, index) => (
+                                        <div key={index} style={{ border: '1px solid #ddd', textAlign: 'center', marginTop: '5px' }}>
+                                            <h2>{itemDetail.name}</h2>
+                                        </div>
+                                    )) : <div style={{ border: '1px solid #ddd', textAlign: 'center', marginTop: '50px', backgroundColor: '#FF4433' }}>
+                                        <h2 style={{ color: 'white' }}>Khu vực này đã thuê hết</h2>
+                                    </div>} */}
+                                </div>
+                            </div>
+                        </Grid>
+                    ))}
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <ModalDetailProduct dataDetail={dataDetail} />
+                        </Box>
+                    </Modal>
+                </Grid>
+            </Box>
+
+
+                                            SETTING MYSQL
+
+INSERT INTO `settings`(`key`, `category`, `value`) VALUES ('CUSTOMER_VERIFY_CONTENT', 'MAIL_TEMPLATES', 
+'[[name]]<a href=\"[[URL]]\" target=\"_self\">verify</a>'), ('CUSTOMER_VERIFY_SUBJECT', 'MAIL_TEMPLATES', 
+'Email to verify...'), ('MAIL_FROM', 'MAIL_SERVER', 'thangptpk01991@fpt.edu.vn'), ('MAIL_HOST', 'MAIL_SERVER',
+'smtp.gmail.com'), ('MAIL_PASSWORD', 'MAIL_SERVER', 'thanhthang307'), ('MAIL_PORT', 'MAIL_SERVER', '587'), 
+('MAIL_SENDER_NAME', 'MAIL_SERVER', 'ShopMe'), ('MAIL_USERNAME', 'MAIL_SERVER', 'thangptpk01991@fpt.edu.vn'), 
+('SMTP_AUTH', 'MAIL_SERVER', 'true'), ('SMTP_SECURED', 'MAIL_SERVER', 'true')
+
+
+extend
+import React, { useEffect, useState } from 'react'
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+import EditIcon from '@mui/icons-material/Edit';
+import { Button, IconButton, InputBase } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
+import { Container, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import Box from '@mui/material/Box';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import axios from 'axios';
+import { API_CONFIRM_ORDER } from 'utils/const';
+import { toast } from 'react-toastify';
+import { API_GET_DETAIL_ORDER } from 'utils/const';
+import Modal from '@mui/material/Modal';
+import CheckIcon from '@mui/icons-material/Check';
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import OrderDetailPopup from './OrderDetailPopup';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import InfoIcon from '@mui/icons-material/Info';
+import { API_EXTEND_TIME } from 'utils/const';
+import DialogExtendTime from './DialogExtendTimeTomorrow';
+import DialogConfirmOrder from './DialogConfirmOrder';
+import DialogRefuseOrder from './DialogRefuseOrder';
+import DialogExtendTimeToday from './DialogExtendTimeToday';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { API_GET_ORDER_ADMIN } from 'utils/const';
+import { showError } from 'utils/error';
+
+const columns = [
+    { id: 'detail', label: '', minWidth: 10 },
+    { id: 'id', label: 'Id', minWidth: 70 },
+    {
+        id: 'orderCode',
+        label: 'Mã đặt hàng',
+        minWidth: 150,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'nameCustomer',
+        label: 'Tên khách',
+        minWidth: 150,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'phoneNumber',
+        label: 'Số điện thoại',
+        minWidth: 150,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'quantity',
+        label: 'Số lượng',
+        minWidth: 100,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'total',
+        label: 'Tổng tiền',
+        minWidth: 150,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'Status',
+        label: 'Trạng thái',
+        minWidth: 100,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'action',
+        label: '',
+        minWidth: 100,
+        align: 'right',
+    },
+
+];
+
+
+function OrderPlace() {
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(3);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+    const [open, setOpen] = useState(false);
+
+
+    useEffect(() => {
+        getOrderUserConfirmed()
+    }, [])
+
+
+    const [data, setData] = useState([])
+    const getOrderUserConfirmed = async (e) => {
+        const response = await axios.get(API_GET_ORDER_ADMIN)
+        if (response && response.status === 200) {
+            setData(response.data)
+        }
+    }
+
+
+    //handle
+    const handleOpen = () => setOpen(true)
+
+    const [openConfirmOrder, setOpenConFirmOrder] = React.useState(false);
+
+    const handleClickOpenConfirmOrder = () => {
+        setOpenConFirmOrder(true);
+    };
+
+    const handleCloseConfirmOrder = () => {
+        setOpenConFirmOrder(false);
+    };
+
+    const confirmOrder = async (id) => {
+        try {
+            const response = await axios.put(API_CONFIRM_ORDER + id + '/true')
+            if (response.status === 200) {
+                toast.success('Thao tác thành công ! ', { autoClose: 2000 })
+                getOrderUserConfirmed()
+            } else toast.error('Thất bại ! ', { autoClose: 2000 })
+        } catch (error) {
+            showError(error)
+        }
+    }
+    const [openRefuseOrder, setOpenRefuseOrder] = React.useState(false);
+
+    const handleClickOpenRefuseOrder = () => {
+        setOpenRefuseOrder(true);
+    };
+
+    const handleCloseRefuseOrder = () => {
+        setOpenRefuseOrder(false);
+    };
+    const refuseOrder = async (id) => {
+        try {
+            const response = await axios.put(API_CONFIRM_ORDER + id + '/false')
+            if (response.status === 200) {
+                toast.success('Thao tác thành công ! ', { autoClose: 2000 })
+                getOrderUserConfirmed()
+                // Sidebar
+            } else toast.error('Thất bại ! ', { autoClose: 2000 })
+        } catch (error) {
+            showError(error)
+        }
+    }
+
+    //handle click detail
+    const [openDetail, setOpenDetail] = React.useState(false);
+    const [dataDetail, setDataDetail] = useState([])
+    const handleCloseDetailOrder = () => setOpenDetail(false);
+
+    const handleOpenDetailOrder = async (id) => {
+        console.log(id);
+        const response = await axios.get(API_GET_DETAIL_ORDER + id)
+        if (response.status === 200) {
+            setDataDetail(response.data.orderDetail)
+        }
+        setOpenDetail(true)
+    };
+
+    //handle popup confirm
+    const [openConfirmTomorrow, setOpenConFirmTomorrow] = React.useState(false);
+
+    const handleClickOpenConfirmTomorrow = () => {
+        setOpenConFirmTomorrow(true);
+    };
+
+    const handleCloseConfirmTomorrow = () => {
+        setOpenConFirmTomorrow(false);
+    };
+
+
+    const [openConfirmToday, setOpenConFirmToday] = React.useState(false);
+
+    const handleClickOpenConfirmToday = () => {
+        setOpenConFirmToday(true);
+    };
+
+    const handleCloseConfirmToday = () => {
+        setOpenConFirmToday(false);
+    };
+
+    const [idSave, setIdSave] = React.useState(Number);
+
+    const extendTime = async (id) => {
+        const response = await axios.post(API_EXTEND_TIME + id + '?day=tomorrow')
+        if (response.status === 200) {
+            toast.success('Thao tác thành công ! ', { autoClose: 1500 })
+            getOrderUserConfirmed()
+            // Sidebar
+        } else toast.error('Thất bại ! ', { autoClose: 2000 })
+    }
+
+    const extendTimeToday = async (id) => {
+        const response = await axios.post(API_EXTEND_TIME + id)
+        if (response.status === 200) {
+            toast.success('Thao tác thành công ! ', { autoClose: 1500 })
+            getOrderUserConfirmed()
+            // Sidebar
+        } else toast.error('Thất bại ! ', { autoClose: 2000 })
+    }
+
+    //handle status
+    const [status, setStatus] = React.useState('');
+
+    const handleChange = async (event) => {
+        setStatus(event.target.value);
+        console.log('status ', event.target.value);
+        if (event.target.value !== 'ALL') {
+            const response = await axios.get(API_GET_ORDER_ADMIN + '?status=' + event.target.value)
+            if (response && response.status === 200) {
+                setData(response.data)
+            }
+        } else {
+            const response = await axios.get(API_GET_ORDER_ADMIN)
+            if (response && response.status === 200) {
+                setData(response.data)
+            }
+        }
+    };
+
+    const [keyword, setKeyword] = React.useState('');
+
+    const search = async (e) => {
+        const response = await axios.get(API_GET_ORDER_ADMIN + '?keyword=' + e.target.value)
+        if (response && response.status === 200) {
+            setData(response.data)
+        }
+    };
+    return (
+        <>
+            <Container fluid style={{ height: "200px" }} className="header bg-gradient-info pb-8 pt-5 pt-md-8 ">
+                <Paper sx={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
+
+                    <div style={{ width: '100%', display: "flex", flexDirection: "row" }}>
+                        {/* <Button onClick={handleOpen} sx={{ padding: "10px 5px", marginRight: '2%', height: '3.2em', width: "15%" }} variant="contained" color="success">
+                            Thêm Trụ
+                        </Button> */}
+                        <Paper sx={{ border: "1px solid #ddd", display: 'flex', padding: '7px 7px 3px 7px', width: '83%', marginBottom: '20px', borderRadius: '7px' }}>
+                            <IconButton type="button" sx={{ p: '0px', }} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                            <InputBase
+                                sx={{ ml: 1, flex: 1, width: '90%', fontSize: '1.1em' }}
+                                placeholder="Tìm kiếm mã đơn hàng"
+                                onChange={e => search(e)}
+                            />
+                        </Paper>
+                        {/* <Button onClick={search} sx={{ width: '15%', marginLeft: '1%', height: '6.3vh' }} variant="contained" color="success">
+                            Tìm kiếm
+                        </Button> */}
+                        <FormControl sx={{ m: 1, width: '17%' }} size="small">
+                            <InputLabel id="demo-select-small">Trạng thái</InputLabel>
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={status}
+                                label="status"
+                                onChange={handleChange}>
+                                <MenuItem value={'ALL'}>ALL</MenuItem>
+                                <MenuItem value={'NEW'}>NEW </MenuItem>
+                                <MenuItem value={'CANCELLED'}>CANCELLED </MenuItem>
+                                <MenuItem value={'DONE'}>DONE </MenuItem>
+                                <MenuItem value={'USER_CONFIRMED'}>USER_CONFIRMED </MenuItem>
+                                <MenuItem value={'PAID'}>PAID </MenuItem>
+                                <MenuItem value={'EXTEND'}>EXTEND</MenuItem>
+                            </Select>
+                        </FormControl>
+
+
+                    </div>
+
+                    {/* <TextField sx={{ mt: "7px", width: "400px" }} id="outlined-basic" label="Search" variant="outlined" /> */}
+                    {/* stickyHeader */}
+                    <TableContainer sx={{ minHeight: '29em' }}>
+                        <Table aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    {columns.map((column) => (
+                                        <TableCell
+                                            sx={{ color: 'black', fontWeight: '600', fontSize: '1em' }}
+                                            key={column.id}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth }}
+                                        >
+                                            {column.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {data.length > 0 ? data
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((item, index) => (
+                                        <TableRow hover sx={{ cursor: 'pointer' }} role="checkbox" key={index}>
+                                            <TableCell sx={{ textAlign: 'right' }}>
+                                                <InfoIcon onClick={() => handleOpenDetailOrder(item.id)}>
+                                                </InfoIcon>
+                                            </TableCell>
+                                            <TableCell>{item.id}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}> {item.orderCode}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}> {item.fullName}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}> {item.phoneNumber}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}> {item.quantity}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}> {item.total}</TableCell>
+                                            <TableCell sx={{ textAlign: 'center' }}> {item.status}</TableCell>
+                                            {item.status === 'NEW' || item.status === 'USER_CONFIRMED' || item.status === 'EXTEND' ?
+                                                <React.Fragment>
+                                                    <TableCell sx={{ textAlign: 'right' }}>
+                                                        <Button variant="contained" onClick={e => {
+                                                            handleClickOpenConfirmOrder()
+                                                            setIdSave(item.id)
+                                                        }} color="success">
+                                                            <CheckIcon />
+                                                        </Button>
+                                                        <Button sx={{ ml: 2, mt: 1 }} variant="contained" onClick={e => {
+                                                            handleClickOpenRefuseOrder()
+                                                            setIdSave(item.id)
+                                                        }} color="error">
+                                                            <DoDisturbIcon />
+                                                        </Button>
+                                                        {/* <MoreTimeIcon sx={{ ml: 2 }} onClick={e => {
+                                                    handleClickOpenConfirm()
+                                                    setIdSave(item.id)
+                                                }} ></MoreTimeIcon> */}
+                                                    </TableCell>
+                                                    <TableCell sx={{ textAlign: "right" }}>
+                                                        <UncontrolledDropdown>
+                                                            <DropdownToggle
+                                                                className="btn-icon-only text-light"
+                                                                href="#pablo"
+                                                                role="button"
+                                                                size="sm"
+                                                                color=""
+                                                                onClick={(e) => e.preventDefault()}
+                                                            >
+                                                                <i className="fas fa-ellipsis-v" />
+                                                            </DropdownToggle>
+                                                            <DropdownMenu className="dropdown-menu-arrow" right>
+                                                                <DropdownItem
+                                                                    onClick={e => {
+                                                                        handleClickOpenConfirmTomorrow()
+                                                                        setIdSave(item.id)
+                                                                    }}>
+                                                                    <MoreTimeIcon />
+                                                                    Gia hạn sang ngày mai
+
+                                                                </DropdownItem>
+                                                                <DropdownItem
+                                                                    onClick={e => {
+                                                                        handleClickOpenConfirmToday()
+                                                                        setIdSave(item.id)
+                                                                    }}>
+                                                                    <MoreTimeIcon />
+                                                                    Gia hạn đến hết hôm nay
+                                                                </DropdownItem>
+                                                            </DropdownMenu>
+                                                        </UncontrolledDropdown>
+                                                    </TableCell>
+                                                </React.Fragment> :
+                                                //disable
+                                                <React.Fragment>
+                                                    <TableCell sx={{ textAlign: 'right' }}>
+                                                        <Button variant="contained" disabled color="success">
+                                                            <CheckIcon />
+                                                        </Button>
+                                                        <Button sx={{ ml: 2, mt: 1 }} variant="contained" disabled color="error">
+                                                            <DoDisturbIcon />
+                                                        </Button>
+                                                    </TableCell>
+                                                    <TableCell sx={{ textAlign: "right" }}>
+                                                        <UncontrolledDropdown>
+                                                            <DropdownToggle
+                                                                className="btn-icon-only text-light"
+                                                                href="#pablo"
+                                                                role="button"
+                                                                size="sm"
+                                                                color=""
+                                                                onClick={(e) => e.preventDefault()}
+                                                            >
+                                                                <i className="fas fa-ellipsis-v" />
+                                                            </DropdownToggle>
+                                                            <DropdownMenu className="dropdown-menu-arrow" right>
+                                                                <DropdownItem
+                                                                    disabled>
+                                                                    <MoreTimeIcon />
+                                                                    Gia hạn sang ngày mai
+
+                                                                </DropdownItem>
+                                                                <DropdownItem
+                                                                    disabled>
+                                                                    <MoreTimeIcon />
+                                                                    Gia hạn đến hết hôm nay
+                                                                </DropdownItem>
+                                                            </DropdownMenu>
+                                                        </UncontrolledDropdown>
+                                                    </TableCell>
+                                                </React.Fragment>}
+                                        </TableRow>
+                                    )) :
+                                    <TableRow >
+                                        <TableCell style={{ borderBottom: '0px solid black' }}> <h4 style={{ fontStyle: 'italic', marginTop: '8px', position: 'absolute' }} > Hiện chưa có ai đặt hàng !</h4></TableCell>
+                                    </TableRow>}
+                                <DialogExtendTime openConfirm={openConfirmTomorrow} handleCloseConfirm={handleCloseConfirmTomorrow} idSave={idSave} extendTime={extendTime} />
+                                <DialogExtendTimeToday openConfirmToday={openConfirmToday} handleCloseConfirmToday={handleCloseConfirmToday} idSave={idSave} extendTimeToday={extendTimeToday} />
+                                <DialogConfirmOrder openConfirmOrder={openConfirmOrder} handleCloseConfirmOrder={handleCloseConfirmOrder} idSave={idSave} confirmOrder={confirmOrder} />
+                                <DialogRefuseOrder openRefuseOrder={openRefuseOrder} handleCloseRefuseOrder={handleCloseRefuseOrder} idSave={idSave} refuseOrder={refuseOrder} />
+
+                                <OrderDetailPopup dataDetail={dataDetail} openDetail={openDetail} handleCloseDetailOrder={handleCloseDetailOrder} />
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[3, 10, 25, 100]}
+                        component="div"
+                        count={data.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Container>
+        </>
+    )
+}
+
+export default OrderPlace
+
+//product component
+import Countdown from "react-countdown";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import { API_ADD_CART } from "utils/const";
+import { Button, createTheme, Pagination, Stack } from "@mui/material";
+import { formatMoney } from "common/formatMoney";
+import { API_ADD_CART_PRE_ORDER } from "utils/const";
+import Moment from "react-moment";
+import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
+import './ProductComponent.css'
+import { API_WISHLIST_ADD } from "utils/const";
+import usePagination from "./Pagination";
+import './css.css'
+import { ThemeProvider } from "styled-components";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { API_WISHLIST_REMOVE } from "utils/const";
+import { API_WISHLIST_GET } from "utils/const";
+import { API_CART_REMOVE } from "utils/const";
+function ProductComponent({ product, onClickRemoveItemCart, addCart }) {
+
+  const renderer = ({ hours, minutes, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <div>Đã hết hạn</div>;
+    } else {
+      // Render a countdown
+      return <span className="detail-time">{hours}:{minutes}</span>;
+    }
+  };
+
+  const buttons = (isPreOrdered, isAvailable,) => {
+    if (isAvailable) {
+      return <button className="btn btn-success">Thêm vào giỏ</button>
+    }
+    if (!isPreOrdered) {
+      return <button className="btn btn-success">Đặt hàng</button>
+    }
+
+  }
+
+  const history = useHistory()
+  let token = localStorage.getItem('token')
+
+  const addCartPreOrder = async (item) => {
+    // save product to cart local
+    const { id, name } = item;
+    try {
+      if (token) {
+        // when already login
+        const response = await axios.post(API_ADD_CART_PRE_ORDER, {
+          month: 1,
+          productId: id
+        }, {
+          headers: {
+            'authorization': 'Bearer ' + localStorage.getItem('token'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response && response.status === 201) {
+          toast.success('Đã thêm vào danh sách thanh toán', {
+            autoClose: 1500
+          })
+          history.push('/auth/cart')
+        };
+      } else {
+        // when don't login
+        toast.warning('Vui lòng đăng nhập để sử dụng tính năng này !', {
+          autoClose: 1500
+        })
+      }
+    } catch (error) {
+      console.log(error.response.data)
+      if (error.response.data.message) {
+        toast.error(`${error.response.data.message}`, {
+          autoClose: 2000
+        })
+      }
+      else if (error.response.data.error) {
+        toast.error(`${error.response.data.error}`, {
+          autoClose: 2000
+        })
+      }
+      else if (error.response.data.error && error.response.data.message) {
+        toast.error(`${error.response.data.message}`, {
+          autoClose: 2000
+        })
+      }
+      else {
+        toast.error('Error', {
+          autoClose: 2000
+        })
+      }
+    }
+  }
+
+  let user = localStorage.getItem('user')
+
+  const onClickAddWishList = async (id) => {
+    if (!token && !user) {
+      history.push('/auth/login')
+      toast.warning("Vui lòng đăng nhập!")
+    } else {
+      const response = await axios.post(API_WISHLIST_ADD + id, {}, {
+        headers: {
+          'authorization': 'Bearer ' + token,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      if (response.status === 200) {
+        getWishList()
+        toast.success("Đã thêm vào danh sách yêu thích.", { autoClose: 1500 })
+      }
+    }
+
+  }
+
+  const onHandleRemoveWishList = async (id) => {
+    const response = await axios.post(API_WISHLIST_REMOVE + id, {}, {
+      headers: {
+        'authorization': 'Bearer ' + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    if (response.status === 200) {
+      getWishList()
+      toast.success("Đã xoá khỏi danh sách yêu thích.", { autoClose: "1500" })
+    }
+
+  }
+
+  useEffect(() => {
+    getWishList()
+  }, [])
+  const [data, setData] = useState([])
+  const getWishList = async (id) => {
+    const response = await axios.get(API_WISHLIST_GET + 0, {
+      headers: {
+        'authorization': 'Bearer ' + token,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    if (response.status === 200) {
+      setData(response.data)
+    }
+  }
+
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 8;
+
+  const count = Math.ceil(product.length / PER_PAGE);
+  const _DATA = usePagination(product, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#00ADB5',
+        contrastText: '#EEE'
+      },
+      secondary: {
+        main: '#EEE'
+      },
+      // background: 'none'
+    },
+    typography: {
+      fontFamily: [
+        'Poppins'
+      ],
+      fontSize: 18,
+    }
+  })
+
+  let listCartItems = JSON.parse(localStorage.getItem("cartTemp"))
+  console.log(listCartItems);
+  return (
+    <React.Fragment>
+      <ThemeProvider theme={theme}>
+        {/* <Stack sx={{ mt: 8 }} alignItems="center">
+          <Pagination
+            sx={{ button: { color: '#ffffff', width: '100%', margin: 'auto' } }}
+            count={count} page={page} color="secondary" onChange={handleChange} />
+        </Stack> */}
+        <div style={{
+          display: "flex", width: '1300px', flexWrap: "wrap", justifyContent: "center"
+          , marginTop: '50px', marginBottom: '70px'
+        }}>
+          {
+            _DATA.currentData().map((item, index) => (
+              <div key={index} style={{ flexDirection: "column", float: "left", position: 'relative', backgroundColor: "#E7EBF0", marginTop: '20px', width: "23%", margin: "5px", display: "flex", padding: "10px", borderRadius: "15px", boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}>
+                <div style={{ width: "100%", height: "30vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                  <img style={{ width: '100%', height: "100%", borderRadius: "8px", objectFit: "cover" }} src={item.photosImagePath} alt="" />
+                </div>
+                <div style={{ width: "100%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+
+                  <h1 style={{ fontSize: "28px", fontWeight: "600", marginBottom: '1px', color: "#444444" }}> {item.name}</h1>
+                  <h2 style={{ color: '#D70018' }}> {formatMoney(item.price)} VNĐ</h2>
+                  <h3>Loại trụ: {item.category.name}</h3>
+                  <h4> {item.description}</h4>
+                  {item.status === 'AVAILABLE' ?
+                    // && listCartItems.filter(i => i.productId === item.id).length === 0
+                    item.inCart === false ?
+                      <Button className="btn-cart-cus" sx={{
+                        '&:hover': {
+                          bgcolor: '#007784',
+                          outline: "none",
+                          boxShadow: "none"
+                        },
+                        border: "3px solid #007784",
+                        fontWeight: "500", width: "100%",
+                        background: "none",
+                        outline: "none",
+                        color: "#007784",
+                        borderRadius: "8px",
+                        boxShadow: "none",
+                      }}
+                        onClick={(e) => addCart({ ...item })} variant="contained" color="success">
+                        Thêm vào thanh toán
+                      </Button>
+                      :
+                      <Button className="btn-cart-cus" sx={{
+                        '&:hover': {
+                          bgcolor: '#007784',
+                          outline: "none",
+                          boxShadow: "none"
+                        },
+                        border: "3px solid #007784",
+                        bgcolor: '#007784',
+                        fontWeight: "500", width: "100%",
+                        outline: "none",
+                        color: "#FFFFFF",
+                        borderRadius: "8px",
+                        boxShadow: "none",
+                      }}
+                        onClick={(e) => onClickRemoveItemCart(item.id)} variant="contained" color="success">
+                        Xóa khỏi thanh toán
+                      </Button>
+                    :
+                    <Button style={{
+                      fontWeight: "500", width: "100%"
+                      , border: "3px solid #333", background: "none", color: "#FFFFFF", boxShadow: "none", backgroundColor: '#333'
+                    }} disabled variant="contained" >
+                      Đã cho thuê
+                    </Button>}
+                  {item.status === 'HIRING' && item.expiredDate !== null ? <div style={{ height: "28.5px" }}> <h4 style={{ marginTop: '15px', }}> Ngày hết hạn: <span style={{ color: 'red' }}> <Moment format="DD/MM/YYYY">{item.expiredDate}</Moment></span> </h4> </div> : ''}
+                </div>
+                {/* {
+                  item.preOrdered === false ?
+                    <Button sx={{ height: '9vh', fontSize: '0.6em', width: '10%', position: 'absolute', top: '0', right: '0', backgroundColor: ' #F4364C' }}
+                      onClick={(e) => addCartPreOrder({ ...item })} variant="contained" >
+                      Đặt trước
+                    </Button> : ''
+                } */}
+                < div style={{ fontWeight: "600", display: "flex", alignItems: "center", marginTop: "7px", justifyContent: "end" }}>
+                  Yêu thích
+                  {
+                    data.filter(i => i.id === item.id).length === 0 ?
+                      <AiOutlineHeart
+                        onClick={(e) => onClickAddWishList(item.id)}
+                        className="colorHeart-cus"
+                        style={{ fontSize: "25px", color: "rgb(215,0,24)", cursor: "pointer" }} /> :
+                      <AiFillHeart
+                        onClick={(e) => onHandleRemoveWishList(item.id)}
+                        style={{ fontSize: "25px", color: "rgb(215,0,24)", cursor: "pointer" }} />
+                  }
+                  {/* <AiFillHeart
+                      onClick={(e) => onHandleRemoveWishList(item.id)}
+                      style={{ fontSize: "25px", color: "rgb(215,0,24)", cursor: "pointer" }} /> 
+                    <AiOutlineHeart
+                      onClick={(e) => onClickAddWishList(item.id)}
+                      className="colorHeart-cus"
+                      style={{ fontSize: "25px", color: "rgb(215,0,24)", cursor: "pointer" }} /> */}
+                </div>
+              </div >
+            ))
+          }
+        </div >
+        <Stack alignItems="center">
+          <Pagination
+            sx={{ button: { color: '#ffffff', width: '100%', margin: 'auto' } }}
+            count={count} page={page} color="secondary" onChange={handleChange} />
+        </Stack>
+      </ThemeProvider>
+    </React.Fragment >
+
+  )
+}
+
+
+export default ProductComponent;

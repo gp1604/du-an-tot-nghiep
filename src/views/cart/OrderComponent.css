@@ -1,0 +1,25 @@
+
+.wrapper {
+  display:flex;
+  flex-direction:column;
+}
+.order{
+  width: 100%;
+  height: 150px;
+
+}
+.NEW{
+  border: 1px solid green;
+}
+
+.EXTEND{
+  border: 1px solid blue;
+}
+
+.PAID{
+  border: 1px solid red;
+}
+
+.DONE{
+  border: 1px solid gray;
+}
