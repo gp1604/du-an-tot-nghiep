@@ -2,6 +2,12 @@
     border: none;
 }
 
+@media (min-width: 0px) and (max-width: 320px){
+ .MuiModal-root .form-add-product {
+    width: 90%;
+}
+}
+
 @media(min-width: 320px) and (max-width: 768px  ) {
     .mt--8 .justify-content-center .col-md-7{
         padding-top: 30px;

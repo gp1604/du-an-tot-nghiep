@@ -35,6 +35,8 @@ const AdminNavbar = (props) => {
     localStorage.removeItem("IdOrder")
     localStorage.removeItem("cartADD")
     localStorage.removeItem("cartTemp")
+    localStorage.removeItem("countCart")
+    localStorage.removeItem("count")
     history.push('/auth/homePage')
     toast.success('Đăng xuất thành công !', { autoClose: 1500 })
     // window.location.reload(false)
@@ -139,7 +141,7 @@ const AdminNavbar = (props) => {
   }
   return (
     <>
-      <Navbar className="navbar-top navcustom-ss navbar-dark" expand="md" id="navbar-main">
+      <Navbar style={{marginBottom:'-5rem'}} className="navbar-top navcustom-ss navbar-dark" expand="md" id="navbar-main">
         <Container fluid>
           <p
             className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
@@ -148,7 +150,6 @@ const AdminNavbar = (props) => {
           </p>
           <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
             <FormGroup className="mb-0">
-
               <div style={{ width: 350 }}>
                 <ReactSearchAutocomplete
                   items={items}
@@ -161,20 +162,18 @@ const AdminNavbar = (props) => {
                   formatResult={formatResult}
                 />
               </div>
-
             </FormGroup>
           </Form>
           <div style={{ marginTop: '15px', cursor: 'pointer' }}>
             <NotificationAdmin />
           </div>
-
           <Nav className="align-items-center d-none d-md-flex" navbar>
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
                     <img
-                      alt="hihi avatar"
+                      alt=""
                       src={decoded.avatar}
                     />
                   </span>

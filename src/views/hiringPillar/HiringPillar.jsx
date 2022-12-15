@@ -73,7 +73,7 @@ export default function HiringPillar({ data, page, search, rowsPerPage, totalPag
 
                     {/* <TextField sx={{ mt: "7px", width: "400px" }} id="outlined-basic" label="Search" variant="outlined" /> */}
                     {/* stickyHeader */}
-                    <TableContainer sx={{ height: '62vh' }}>
+                    <TableContainer sx={{ height: '67vh' }}>
                         <Table aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
@@ -119,7 +119,7 @@ export default function HiringPillar({ data, page, search, rowsPerPage, totalPag
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <TablePagination
+                    {/* <TablePagination
                         rowsPerPageOptions={[6, 10, 25, 100]}
                         component="div"
                         count={totalPages}
@@ -127,7 +127,7 @@ export default function HiringPillar({ data, page, search, rowsPerPage, totalPag
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    /> */}
                 </Paper>
             </Container>
         </>

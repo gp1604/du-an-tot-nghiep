@@ -11,50 +11,24 @@ import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import AuthVerifyComponent from './AuthVerifyComponent '
 import { toast, ToastContainer } from "react-toastify";
-import { createRoot } from 'react-dom/client';
 import jwt_decode from "jwt-decode";
 
 
-
-// localStorage.setItem("data", JSON.stringify({ role: 'admin', name: 'abc' }))
-
-// var hours = 2;
-// var now = new Date().getTime();
-// var setupTime = localStorage.getItem('setupTime');
-// if (setupTime == null) {
-//   localStorage.setItem('setupTime', now)
-// } else {
-//   if (now - setupTime > hours * 60 * 60 * 1000) {
-//     localStorage.clear()
-//     toast.warning('Phiên đăng nhập đã hết hạn ', { autoClose: 1000 })
-//     setTimeout(() => {
-//       window.location.reload();
-//     }, 1700);
-//     localStorage.setItem('setupTime', now);
-//   }
+// let token = localStorage.getItem('token')
+// let decoded;
+// let decode;
+// if (token !== null) {
+//   decoded = jwt_decode(token);
+//   decode = JSON.parse(atob(token.split('.')[1]));
 // }
-let token = localStorage.getItem('token')
-let decoded;
-let decode;
-if (token !== null) {
-  decoded = jwt_decode(token);
-  decode = JSON.parse(atob(token.split('.')[1]));
-}
-if (token && decode.exp * 1000 < new Date().getTime()) {
-  localStorage.clear()
-  toast.warning('Phiên đăng nhập đã hết hạn ', { autoClose: 1200 })
-  setTimeout(() => {
-    window.location.reload();
-  }, 1500);
-}
+// if (token && decode.exp * 1000 < new Date().getTime()) {
+//   localStorage.clear()
+//   toast.warning('Phiên đăng nhập đã hết hạn ', { autoClose: 1200 })
+//   setTimeout(() => {
+//     window.location.reload();
+//   }, 1500);
+// }
 
-if (token && decoded.roles == '[ROLE_ADMIN]') {
-  document.title = "Quản lý trụ quảng cáo | Admin";
-} else if (token && decoded.roles == '[ROLE_USER]') {
-  document.title = "ACN | Trụ quảng cáo";
-} else if (!token && !decoded) {
-  document.title = "ACN | Trụ quảng cáo";
-}
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.Fragment>

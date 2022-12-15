@@ -11,29 +11,30 @@ import Select from '@mui/material/Select';
 export default function EditCustomer({ item, openEdit, setOpenEdit, handleCloseEdit, onSubmitEdit }) {
   const listRoles = [
     {
-      value: "ROLE_USER",
+      value: "[ROLE_USER]",
       name: "User"
     },
     {
-      value: "ROLE_ADMIN",
+      value: "[ROLE_ADMIN]",
       name: "Admin"
     }
   ]
-  console.log(item);
+  const { firstName, roles } = item
 
+  console.log(item);
+  const [data, setData] = useState({
+    roleName: item.roles || '',
+  })
   useEffect(() => {
     setData({
       roleName: item.roles || '',
     })
   }, [item])
 
-  const { firstName, roles } = item
   console.log(item.roles);
 
   const [valueState, setValueState] = useState()
-  const [data, setData] = useState({
-    roleName: item.roles || '',
-  })
+
 
   const handleChange = (event) => {
     const value = event.target.value
@@ -56,7 +57,7 @@ export default function EditCustomer({ item, openEdit, setOpenEdit, handleCloseE
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box className='form-add-product'
+        <Box className='form-add-address'
           sx={{
             width: '40%',
             position: 'relative',
@@ -75,7 +76,6 @@ export default function EditCustomer({ item, openEdit, setOpenEdit, handleCloseE
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={data.roleName}
-                defaultValue={roles}
                 label="Vai trò"
                 onChange={handleChange}
               >

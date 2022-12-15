@@ -1,25 +1,28 @@
-
 .wrapper {
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 }
-.order{
+
+.wrapper-detail-parent {
+  padding-bottom: 0 !important;
+  font-weight: 700;
+}
+.order {
   width: 100%;
   height: 150px;
-
 }
-.NEW{
+.NEW {
   border: 1px solid green;
 }
 
-.EXTEND{
+.EXTEND {
   border: 1px solid blue;
 }
 
-.PAID{
-  border: 1px solid red;
+.PAID {
+  border: 1px solid orange;
 }
 
-.DONE{
+.DONE {
   border: 1px solid gray;
 }

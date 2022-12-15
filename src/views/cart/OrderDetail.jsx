@@ -86,8 +86,8 @@ function OrderDetail() {
                         }
                     });
                     if (response && response.status === 200) {
-                        toast.success('Success', {
-                            autoClose: 3000
+                        toast.success('Thành công', {
+                            autoClose: 1500
                         })
                         setSize(99)
 
@@ -125,39 +125,8 @@ function OrderDetail() {
         }
     }
 
-    const [childData, setChildData] = useState({});
-    const reOrder = async () => {
-        try {
-            var myMap = new Map()
-            childData.map((item) => {
-                myMap.set(item.productId, item.month);
-            })
-            const obj = Object.fromEntries(myMap);
+    const [id, setId] = useState(0);
 
-            const dataAPI = {
-                id: data.id,
-                productInfo: obj
-            }
-            console.log('child data, ', dataAPI);
-
-
-            const response = await axios.put(API_ORDER_RE_ORDER, dataAPI, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response && response.status === 200) {
-                toast.success('Success', {
-                    autoClose: 3000
-                })
-            };
-
-        } catch (error) {
-            showError(error)
-        }
-    }
 
     const Completionist = () => <div>cc</div>
     const renderer = ({ hours, minutes, seconds, completed }) => {
@@ -175,26 +144,22 @@ function OrderDetail() {
     };
     useEffect(() => {
         // startTimer()
+        document.title = 'ACN | Chi tiết đơn hàng';
         if (data.status === 'NEW') {
-            // setValueStatus('Thanh toán')
             setIsConFirm(false)
         } else if (data.status === 'USER_CONFIRMED') {
-            // setValueStatus('Vui lòng chờ admin phê duyệt đơn hàng của bạn !')
             setIsConFirm(true)
         } else if (data.status === 'CANCELLED') {
-            // setValueStatus('Bạn đã huỷ đơn hàng này')
             setIsConFirm(true)
         } else if (data.status === 'PAID') {
-            // setValueStatus('Đã xác nhận')
             setIsConFirm(true)
         }
     }, [])
 
     useEffect(() => {
         setSize(size)
-        console.log('size', size);
         getAllOderDetail();
-    }, [size])
+    }, [size, id])
 
     const [bank, setBank] = React.useState('mbbank');
 
@@ -206,7 +171,7 @@ function OrderDetail() {
         <div style={{ backgroundColor: 'white' }}>
             <UserSize changeUserCount={(data) => setSize(data)} />
             <section className="h-100 h-custom" style={{ backgroundColor: "#eee" }}>
-                <div style={{ width: '1000px' }} >
+                <div style={{ width: '100%', maxWidth: "1000px" }} >
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col">
                             <div className="card">
@@ -227,19 +192,11 @@ function OrderDetail() {
                                             </div>
 
                                             <Order order={data}
-                                                dataBack={cData => setChildData(cData)}
+                                                updatingComponent={cData => setId(cData)}
                                                 isExtended={isExtended}
                                                 orderData={(data2) => setOrder(data2)}
                                             />
 
-                                            {dataDetail ?
-                                                dataDetail.map((item, index) => (
-                                                    <div className="card mb-3" key={index}>
-
-                                                    </div>
-                                                ))
-
-                                                : <h2> Chưa có sản phẩm nào </h2>}
                                         </div>
                                         <ComponentRightInfo bank={bank} handleChange={handleChange} data={data} renderer={renderer}
                                             checkout={checkout} isConfirm={isConfirm} valueStatus={valueStatus} onChangeExtendedStatus={onChangeExtendedStatus} />

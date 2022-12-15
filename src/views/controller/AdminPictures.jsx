@@ -48,7 +48,16 @@ export default function AdminPictures() {
         console.log(item);
     }
 
-    const onSubmitAdd = async (data) => {
+    let flag = false
+    data.map(item => {
+        if (item.category == 'logo') {
+            flag = true
+        }
+    })
+    const onSubmitAdd = async (data, setData) => {
+        // if (data.category === '') {
+        //     data.category = 'banner'
+        // }
         try {
             const formData = new FormData();
             formData.append('image', data.image);
@@ -60,6 +69,10 @@ export default function AdminPictures() {
                 toast.success("Thêm thành công", { autoClose: 1500 })
                 setOpen(false)
                 fetchAPI()
+                // setData({
+                //     category: "",
+                //     image: "",
+                // })
             }
         } catch (error) {
             showError(error)
@@ -67,11 +80,10 @@ export default function AdminPictures() {
     }
 
     const onSubmitEdit = async (data) => {
-        console.log('on submit id ', data);
         try {
             const formData = new FormData();
             formData.append('image', data.image);
-            const response = await axios.post(API_UPDATE_PICTURES + data.id, formData,
+            const response = await axios.post(API_UPDATE_PICTURES + data.id + '?active=' + data.active, formData,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 })
@@ -80,6 +92,7 @@ export default function AdminPictures() {
                 fetchAPI();
                 setOpenEdit(false)
             }
+
             //catch show error
         } catch (error) {
             showError(error)

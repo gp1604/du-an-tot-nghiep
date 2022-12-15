@@ -29,7 +29,8 @@ export default function EditSetting({ openEdit, setOpenEdit, item, onSubmitEdit 
             >
                 <Box className='form-add-product'
                     sx={{
-                        maxWidth: '40%',
+                        maxWidth: "450px !important",
+                        width: '30%',
                         position: 'relative',
                         transform: "translate(-50%, -50%)",
                         backgroundColor: 'white',

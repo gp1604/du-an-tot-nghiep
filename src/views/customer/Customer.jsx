@@ -56,7 +56,7 @@ const columns = [
     },
 ];
 
-export default function Customer({ onEdit, data, page, search,rowsPerPage, totalPages, handleChangePage, handleChangeRowsPerPage }) {
+export default function Customer({ onEdit, data, page, search, rowsPerPage, totalPages, handleChangePage, handleChangeRowsPerPage }) {
     const onClickEdit = (data) => {
         onEdit(data);
     }
@@ -109,11 +109,11 @@ export default function Customer({ onEdit, data, page, search,rowsPerPage, total
                                             <TableCell sx={{ textAlign: 'center' }}> {item.email}</TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}> {item.phoneNumber}</TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}> {item.roles}</TableCell>
-
-                                            <TableCell sx={{ textAlign: 'center' }}> <Moment format='MMMM Do YYYY, h:mm:ss a'>{item.createdDate}</Moment></TableCell>
-
+                                            <TableCell sx={{ textAlign: 'center' }}>  <Moment format="DD/MM/YYYY hh:ss">{item.createdate}</Moment></TableCell>
                                             <TableCell sx={{ textAlign: 'right' }}>
-                                                <UncontrolledDropdown>
+                                                <EditIcon sx={{ cursor: 'pointer' }} onClick={(e) => onClickEdit(item)} />
+
+                                                {/* <UncontrolledDropdown>
                                                     <DropdownToggle
                                                         className="btn-icon-only text-light"
                                                         href="#pablo"
@@ -138,7 +138,7 @@ export default function Customer({ onEdit, data, page, search,rowsPerPage, total
                                                             Update
                                                         </DropdownItem>
                                                     </DropdownMenu>
-                                                </UncontrolledDropdown>
+                                                </UncontrolledDropdown> */}
                                             </TableCell>
                                         </TableRow>
                                     ))}

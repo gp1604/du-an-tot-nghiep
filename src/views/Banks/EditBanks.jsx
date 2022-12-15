@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useEffect } from 'react';
 export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item }) {
     const { bankName, bankCode, bankAccountNumber, bankAccountName } = item
 
@@ -20,7 +21,15 @@ export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item })
     const onClickUpdate = () => {
         onHandleEdit({ ...data, id: (item.id) })
     }
-
+    useEffect(() => {
+        setData({
+            bankAccountName: item.bankAccountName || "",
+            bankAccountNumber: item.bankAccountNumber || "",
+            bankCode: item.bankCode || "",
+            bankName: item.bankName || "",
+        })
+    }, [item])
+    console.log('d', data);
     const handleClose = () => setOpenEdit(false)
     return (
         <div>
@@ -30,7 +39,7 @@ export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item })
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box className='form-add-product'
+                <Box className='form-add-address'
                     sx={{
                         width: '40%',
                         position: 'relative',
@@ -44,7 +53,7 @@ export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item })
                     <h2 style={{ textAlign: 'center' }}>Sửa thông tin tài khoản ngân hàng</h2>
                     <div style={{ display: 'flex', flexDirection: "column-reverse", margin: "10px" }} className="form-flex">
                         <TextField onChange={onChangeText} defaultValue={bankAccountName} name="bankAccountName" style={{ margin: '5px' }} fullWidth label='Tên chủ tài khoản' />
-                        <TextField onChange={onChangeText} defaultValue={bankAccountNumber} name="bankAccountNumber" style={{ margin: '5px' }} fullWidth label='Số tài khoản' />
+                        <TextField type={'number'} onChange={onChangeText} defaultValue={bankAccountNumber} name="bankAccountNumber" style={{ margin: '5px' }} fullWidth label='Số tài khoản' />
                         <TextField onChange={onChangeText} defaultValue={bankCode} name="bankCode" style={{ margin: '5px' }} fullWidth label='Mã ngân hàng' />
                         <TextField onChange={onChangeText} defaultValue={bankName} name="bankName" style={{ margin: '5px' }} fullWidth label='Tên ngân hàng' />
                     </div>

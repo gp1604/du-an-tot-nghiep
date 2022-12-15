@@ -10,18 +10,18 @@ import Select from '@mui/material/Select';
 
 export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubmitEdit }) {
 
-    const { category, image } = item
+    const { active, image } = item
     // const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
         setDataEdit({
-            category: category || '',
+            active: active || '',
             image: item.image || ''
         })
     }, [item])
 
     const [dataEdit, setDataEdit] = useState({
-        category: category || '',
+        active: active || '',
         image: item.image || ''
     })
 
@@ -50,8 +50,9 @@ export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubm
         console.log(event.target.value);
         const value = event.target.value;
         setValueStateCategory(event.target.value);
-        setDataEdit({ ...dataEdit, category: value });
+        setDataEdit({ ...dataEdit, active: value });
     };
+
     return (
         <Modal
             open={openEdit}
@@ -59,7 +60,7 @@ export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubm
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
-            <Box className='form-add-product'
+            <Box className='form-add-address'
                 sx={{
                     width: '40%',
                     position: 'relative',
@@ -71,7 +72,7 @@ export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubm
                 }}>
                 <h2 style={{ textAlign: 'center' }}>Sửa thông tin ảnh</h2>
                 <div style={{ display: 'flex', flexDirection: "column-reverse", margin: "10px" }} className="form-flex">
-                    <FormControl fullWidth sx={{ margin: "5px" }}>
+                    {/* <FormControl fullWidth sx={{ margin: "5px" }}>
                         <InputLabel id="demo-simple-select-label">Loại ảnh</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -82,9 +83,20 @@ export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubm
                             <MenuItem value={'logo'}>Ảnh logo</MenuItem>
                             <MenuItem value={'about'}>Ảnh about us</MenuItem>
                         </Select>
+                    </FormControl> */}
+                    <FormControl fullWidth sx={{ margin: "5px" }}>
+                        <InputLabel id="demo-simple-select-label">Hiện ảnh</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={dataEdit.active}
+                            onChange={handleChangeCategory}>
+                            <MenuItem value={'true'}>Hiện</MenuItem>
+                            <MenuItem value={'false'}>Ẩn</MenuItem>
+                        </Select>
                     </FormControl>
-                    <TextField onChange={onChangeImage} style={{ margin: '5px -5px 5px 5px' }}
-                        name="image" type="file" multiple accept="image/*" />
+                    {/* <TextField onChange={onChangeImage} style={{ margin: '5px -5px 5px 5px' }}
+                        name="image" type="file" multiple accept="image/*" /> */}
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "center" }}>

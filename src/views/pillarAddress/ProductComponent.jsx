@@ -196,22 +196,21 @@ function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) 
             sx={{ button: { color: '#ffffff', width: '100%', margin: 'auto' } }}
             count={count} page={page} color="secondary" onChange={handleChange} />
         </Stack> */}
-        <div style={{
-          display: "flex", width: '1300px', flexWrap: "wrap", justifyContent: "center"
+        <div className="container-add-detail" style={{
+          display: "flex", width: '100%', flexWrap: "wrap", justifyContent: "center"
           , marginTop: '50px', marginBottom: '70px'
         }}>
           {
             _DATA.currentData().map((item, index) => (
-              <div key={index} style={{ flexDirection: "column", float: "left", position: 'relative', backgroundColor: "#E7EBF0", marginTop: '20px', width: "23%", margin: "5px", display: "flex", padding: "10px", borderRadius: "15px", boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}>
-                <div style={{ width: "100%", height: "30vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <div className="add-detail-pro" key={index} style={{ flexDirection: "column", float: "left", position: 'relative', backgroundColor: "#E7EBF0", marginTop: '20px', width: "23.5%", margin: "5px", display: "flex", padding: "10px", borderRadius: "15px", boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}>
+                <div className="image-add-detail-pro" style={{ width: "100%", height: "200px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                   <img style={{ width: '100%', height: "100%", borderRadius: "8px", objectFit: "cover" }} src={item.photosImagePath} alt="" />
                 </div>
                 <div style={{ width: "100%", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-
-                  <h1 style={{ fontSize: "28px", fontWeight: "600", marginBottom: '1px', color: "#444444" }}> {item.name}</h1>
-                  <h2 style={{ color: '#D70018' }}> {formatMoney(item.price)} VNĐ</h2>
-                  <h3>Loại trụ: {item.category.name}</h3>
-                  <h4> {item.description}</h4>
+                  <h1 style={{ fontSize: "16px", margin: "0", color: "#444444" }}> {item.name}</h1>
+                  <h2 style={{ fontSize: "18px", margin: "0", fontWeight: "600", color: '#D70018' }}> {formatMoney(item.price)} VNĐ</h2>
+                  <h3 style={{ fontSize: "14px", margin: "0", }}>Loại trụ: {item.category.name}</h3>
+                  <h4 style={{ fontSize: "14px", }}> {item.description}</h4>
                   {token ?
                     //when already login
                     item.status === 'AVAILABLE' ?
@@ -253,7 +252,7 @@ function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) 
                           Xóa khỏi thanh toán
                         </Button>
                       :
-                      <Button style={{
+                      <Button className="btn-cart-cus-bl" style={{
                         fontWeight: "500", width: "100%"
                         , border: "3px solid #333", background: "none", color: "#FFFFFF", boxShadow: "none", backgroundColor: '#333'
                       }} disabled variant="contained" >
@@ -299,18 +298,14 @@ function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) 
                           onClick={(e) => onClickRemoveItemCart(item.id)} variant="contained" color="success">
                           Xóa khỏi thanh toán
                         </Button> :
-                      <Button style={{
+                      <Button className="btn-cart-cus-bl" style={{
                         fontWeight: "500", width: "100%"
                         , border: "3px solid #333", background: "none", color: "#FFFFFF", boxShadow: "none", backgroundColor: '#333'
                       }} disabled variant="contained" >
                         Đã cho thuê
                       </Button>
                   }
-                  <FmdGoodIcon onClick={(e) => {
-                    setItem(item)
-                  }} style={{ color: 'red', cursor: 'pointer', marginTop: '10px' }} />
-
-                  {item.status === 'HIRING' && item.expiredDate !== null ? <div style={{ height: "28.5px" }}> <h4 style={{ marginTop: '15px', }}> Ngày hết hạn: <span style={{ color: 'red' }}> <Moment format="DD/MM/YYYY">{item.expiredDate}</Moment></span> </h4> </div> : ''}
+                  {item.status === 'HIRING' && item.expiredDate !== null ? <div style={{ height: "" }}> <h4 style={{ fontSize: "14px", marginTop: '5px', marginBottom: "0" }}> Ngày hết hạn: <span style={{ fontSize: "14px", color: 'red' }}> <Moment style={{ fontSize: "14px" }} format="DD/MM/YYYY">{item.expiredDate}</Moment></span> </h4> </div> : ''}
                 </div>
                 {/* {
                   item.preOrdered === false ?
@@ -319,28 +314,33 @@ function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) 
                       Đặt trước
                     </Button> : ''
                 } */}
-                < div style={{ fontWeight: "600", display: "flex", alignItems: "center", marginTop: "7px", justifyContent: "end" }}>
-                  Yêu thích
-                  {
-                    data.filter(i => i.id === item.id).length === 0 ?
-                      <AiOutlineHeart
-                        onClick={(e) => onClickAddWishList(item.id)}
-                        className="colorHeart-cus"
-                        style={{ fontSize: "25px", color: "rgb(215,0,24)", cursor: "pointer" }} /> :
-                      <AiFillHeart
-                        onClick={(e) => onHandleRemoveWishList(item.id)}
-                        style={{ fontSize: "25px", color: "rgb(215,0,24)", cursor: "pointer" }} />
-                  }
+                <div style={{ width: '100%', display: 'flex', justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", marginTop: '5px' }}>
+                    <FmdGoodIcon onClick={(e) => {
+                      setItem(item)
+                    }} style={{ color: 'black', cursor: 'pointer', fontSize: "22px", }} />
+                    <span className="vt-yt-dt" onClick={(e) => {
+                      setItem(item)
+                    }} style={{ fontSize: "14px", fontWeight: "600", cursor: 'pointer', }}>Vị trí</span>
+                  </div>
+                  <div className="vt-yt-dt" style={{ fontSize: "14px", fontWeight: "600", display: "flex", alignItems: "center", marginTop: "5px", justifyContent: "end" }}>
+                    Yêu thích
+                    {
+                      data.filter(i => i.id === item.id).length === 0 ?
+                        <AiOutlineHeart
+                          onClick={(e) => onClickAddWishList(item.id)}
+                          className="colorHeart-cus"
+                          style={{ fontSize: "22px", color: "rgb(215,0,24)", cursor: "pointer" }} /> :
+                        <AiFillHeart
+                          onClick={(e) => onHandleRemoveWishList(item.id)}
+                          style={{ fontSize: "22px", color: "rgb(215,0,24)", cursor: "pointer" }} />
+                    }
+                  </div>
                 </div>
               </div >
             ))
           }
         </div >
-        <Stack alignItems="center">
-          <Pagination
-            sx={{ button: { color: '#ffffff', width: '100%', margin: 'auto' } }}
-            count={count} page={page} color="secondary" onChange={handleChange} />
-        </Stack>
       </ThemeProvider >
     </React.Fragment >
 

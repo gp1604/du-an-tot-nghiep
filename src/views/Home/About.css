@@ -1,314 +1,314 @@
-.bodyAbout *, *:before, *:after {
-    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-   }
-  
-  .clearfix:after {
-     content: " ";
-     visibility: hidden;
-     display: block;
-     height: 0;
-     clear: both;
-  }
-  
-  .bodyAbout  {
-      margin: 0;
-      margin-top: 120px;
-      font-style: sans-serif;
-      font-size: 14px;
-      width: 100%;
-      position: relative;
-  }
-  
-  .bodyAbout .container {
-      width: 80%;
-      border: 1px solid rgba(0, 0, 0, 0);
-      margin: 0 auto;
-  }
-  
-  .secondaryContainer {
-      width: 100%;
-      position: relative;
-      z-index: 3;
-  }
-  
-  .bodyAbout h3 {
-      color: white;
-      font-family: Anonymous Pro;
-      font-weight: 400;
-      font-size: 24px;
-      line-height: 32px;
-      text-shadow: 0 0 5px #000;
-  }
-  
-  .bodyAbout p {
-      color: white;
-      font-family: Source Sans Pro;
-      font-weight: 300;
-      font-size: 16px;
-      line-height: 20px;
-      text-shadow: 0 0 5px #000;
-  }
-  
-  /*timeline images and text start here*/
-  
-  .timeline /*gradient*/ {
- 
-  background: #172b4d;
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5e5e', endColorstr='#a32367', GradientType=1 );
-  width: 100%;
-  
-  }
-  
-  
-  .timelineTextRight {
-      float: right;
-      padding: 3%;
-      width: 45%;
-      border: 5px solid white;
-      margin: 1.25%;
-      box-shadow: 0 0 30px rgb(73, 68, 71);
-  }
-  
-  .timelineTextLeft {
-      float: left;
-      padding: 3%;
-      width: 45%;
-      border: 5px solid white;
-      margin: 0 1.25%;
-      text-align: right;
-      box-shadow: 0 0 30px rgba(73, 68, 71);
-  }
-  
-  .diamondImgHolderLeft {
-      float: left;
-      margin: 1.25%;
-      width: 45%;
-      /*border: 1px solid white;*/
-  }
-  
-  .diamondImgHolderRight {
-      float: right;
-      margin: 1.25%;
-      width: 45%;
-      /*border: 1px solid white;*/
-  }
-  
-  
-  .diamond {/*this is the diamond shape maker for the images*/
-      width: 60%;
-   /* 	height: 250px;*/
-        margin: 20%;
-        -ms-transform: rotate(-30deg);
-        -webkit-transform: rotate(-30deg);
-        transform: rotate(-30deg);
-       overflow: hidden;
-       border: 5px solid white;
-       position: relative;
-       box-shadow: 0 0 30px rgba(73, 68, 71);
-       z-index: 1;
-   }
-  
-  img.timelineImageLeft {
-      float: left;
-      max-width: 100%;
-        /*height: 280px;*/
-        -ms-transform: rotate(30deg) scale(1.4);
-        -webkit-transform: rotate(30deg) scale(1.4);
-        transform: rotate(30deg) scale(1.4);	
-  }
-  
-  img.timelineImageRight {
-      float: right;
-      max-width: 100%;
-        /*height: 280px;*/
-        -ms-transform: rotate(30deg) scale(1.4);
-        -webkit-transform: rotate(30deg) scale(1.4);
-        transform: rotate(30deg) scale(1.4);
-  }
-  
-  
-  /*Vertical and horizontal line begins here*/
-  
-  .middleLine {
-      width: .5%;
-      margin: 0 49.5%;
-      height: 100%;
-      float: left;
-      background: white;
-      z-index: 1;
-      position: absolute;
-      /*padding: 0;*/
-      box-shadow: 0 0 30px rgba(73, 68, 71);
-      bottom: 0;
-      top: 0;
-  
-  }
-  
-  .horizLeft1{
-      width: 25%;
-      border: 2px solid white;
-      position: absolute;
-      top: 10%;
-      left: 25%;
-      box-shadow: 0 0 30px rgba(73, 68, 71);
-  }
-  
-  .horizRight1{
-      width: 25%;
-      border: 2px solid white;
-      position: absolute;
-      top: 50%;
-      right: 25%;
-      box-shadow: 0 0 30px rgba(73, 68, 71);
-  }
-  
-  .horizLeft2{
-      width: 25%;
-      border: 2px solid white;
-      position: absolute;
-      top: 75%;
-      left: 25%;
-      box-shadow: 0 0 30px rgba(73, 68, 71);
-  }
-  
-  @media (max-width: 870px) {
-  
-      .diamond {/*this is the diamond shape maker for the images*/
-          width: 60%;
-      }
-  
-      .diamondImgHolderLeft {
-      float: left;
-      margin: 1%;
-      width: 44%;
-      /*border: 1px solid white;*/
-  }
-  
-  .diamondImgHolderRight {
-      float: right;
-      margin: 1%;
-      width: 44%;
-      /*border: 1px solid white;*/
-  }
-      
-      h3 {
-          font-size: 0.85rem;
-          padding: 0;
-      }
-  
-      p {
-          font-size: 0.85rem;
-      }
-  
-      .timelineTextRight {
-      padding: 1%;
-      width: 54%;
-      margin: 4% 0;
-      /*border: 2px solid white;*/
-      }
-  
-      .timelineTextLeft {
-      padding: 1%;
-      width: 54%;
-      /*border: 2px solid white;*/
-      margin: 4% 0;
-      }
-  
-      .middleLine {
-          display: none;
-      }
-  
-      .horizLeft1 {
-          display: none;
-      }
-  
-      .horizLeft2 {
-          display: none;
-      }
-  
-      .horizRight1 {
-          display: none;
-      }
-  }
-  
-  @media (max-width: 720px) {
-      /*.diamond {this is the diamond shape maker for the images
+@import url(https://fonts.googleapis.com/css?family=Quicksand:300,regular,500,600,700);
+
+.bodyAbout *,
+*:before,
+*:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.clearfix:after {
+    content: " ";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.bodyAbout {
+    margin: 0;
+    margin-top: 30px;
+    font-style: sans-serif;
+    font-size: 14px;
+    width: 100%;
+    position: relative;
+}
+
+.bodyAbout .container {
+    width: 80%;
+    border: 1px solid rgba(0, 0, 0, 0);
+    margin: 0 auto;
+}
+
+.secondaryContainer {
+    width: 100%;
+    position: relative;
+    z-index: 3;
+}
+
+.bodyAbout h3 {
+    color: white;
+    font-family: QuickSand;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 32px;
+    text-shadow: 0 0 5px #000;
+}
+
+.bodyAbout p {
+    color: white;
+    font-family: QuickSand;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 20px;
+    text-shadow: 0 0 5px #000;
+}
+
+/*timeline images and text start here*/
+
+.timeline /*gradient*/ {
+    background: #172b4d;
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff5e5e', endColorstr='#a32367', GradientType=1 );
+    width: 100%;
+}
+
+.timelineTextRight {
+    float: right;
+    padding: 3%;
+    width: 45%;
+    border: 5px solid white;
+    margin: 1.25%;
+    box-shadow: 0 0 30px rgb(73, 68, 71);
+}
+
+.timelineTextLeft {
+    float: left;
+    padding: 3%;
+    width: 45%;
+    border: 5px solid white;
+    margin: 0 1.25%;
+    text-align: right;
+    box-shadow: 0 0 30px rgba(73, 68, 71);
+}
+
+.diamondImgHolderLeft {
+    float: left;
+    margin: 1.25%;
+    width: 45%;
+    /*border: 1px solid white;*/
+}
+
+.diamondImgHolderRight {
+    float: right;
+    margin: 1.25%;
+    width: 45%;
+    /*border: 1px solid white;*/
+}
+
+.diamond {
+    /*this is the diamond shape maker for the images*/
+    width: 60%;
+    /* 	height: 250px;*/
+    margin: 20%;
+    -ms-transform: rotate(-30deg);
+    -webkit-transform: rotate(-30deg);
+    transform: rotate(-30deg);
+    overflow: hidden;
+    border: 5px solid white;
+    position: relative;
+    box-shadow: 0 0 30px rgba(73, 68, 71);
+    z-index: 1;
+}
+
+img.timelineImageLeft {
+    float: left;
+    max-width: 100%;
+    /*height: 280px;*/
+    -ms-transform: rotate(30deg) scale(1.4);
+    -webkit-transform: rotate(30deg) scale(1.4);
+    transform: rotate(30deg) scale(1.4);
+}
+
+img.timelineImageRight {
+    float: right;
+    max-width: 100%;
+    /*height: 280px;*/
+    -ms-transform: rotate(30deg) scale(1.4);
+    -webkit-transform: rotate(30deg) scale(1.4);
+    transform: rotate(30deg) scale(1.4);
+}
+
+/*Vertical and horizontal line begins here*/
+
+.middleLine {
+    width: 0.5%;
+    margin: 0 49.5%;
+    height: 100%;
+    float: left;
+    background: white;
+    z-index: 1;
+    position: absolute;
+    /*padding: 0;*/
+    box-shadow: 0 0 30px rgba(73, 68, 71);
+    bottom: 0;
+    top: 0;
+}
+
+.horizLeft1 {
+    width: 25%;
+    border: 2px solid white;
+    position: absolute;
+    top: 10%;
+    left: 25%;
+    box-shadow: 0 0 30px rgba(73, 68, 71);
+}
+
+.horizRight1 {
+    width: 25%;
+    border: 2px solid white;
+    position: absolute;
+    top: 50%;
+    right: 25%;
+    box-shadow: 0 0 30px rgba(73, 68, 71);
+}
+
+.horizLeft2 {
+    width: 25%;
+    border: 2px solid white;
+    position: absolute;
+    top: 75%;
+    left: 25%;
+    box-shadow: 0 0 30px rgba(73, 68, 71);
+}
+
+@media (max-width: 870px) {
+    .diamond {
+        /*this is the diamond shape maker for the images*/
+        width: 60%;
+    }
+
+    .diamondImgHolderLeft {
+        float: left;
+        margin: 1%;
+        width: 44%;
+        /*border: 1px solid white;*/
+    }
+
+    .diamondImgHolderRight {
+        float: right;
+        margin: 1%;
+        width: 44%;
+        /*border: 1px solid white;*/
+    }
+
+    h3 {
+        font-size: 0.85rem;
+        padding: 0;
+    }
+
+    p {
+        font-size: 0.85rem;
+    }
+
+    .timelineTextRight {
+        padding: 1%;
+        width: 54%;
+        margin: 4% 0;
+        /*border: 2px solid white;*/
+    }
+
+    .timelineTextLeft {
+        padding: 1%;
+        width: 54%;
+        /*border: 2px solid white;*/
+        margin: 4% 0;
+    }
+
+    .middleLine {
+        display: none;
+    }
+
+    .horizLeft1 {
+        display: none;
+    }
+
+    .horizLeft2 {
+        display: none;
+    }
+
+    .horizRight1 {
+        display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    /*.diamond {this is the diamond shape maker for the images
           width: 100%;
           display: block;
           float: none;
       }*/
-  
-      .diamondImgHolderLeft {
-          float: left;
-          margin: 1%;
-          width: 98%;
-          padding:1%;
-      }
-  
-      .diamondImgHolderRight {
-          float: right;
-          margin: 1%;
-          width: 98%;
-          padding:2%;
-      }
-  
-      .timelineTextRight {
-          padding: 1%;
-          width: 100%;
-          margin: 1% 0;
-          /*border: 2px solid white;*/
-      }
-  
-      .timelineTextLeft {
-          padding: 1%;
-          width: 100%;
-          /*border: 2px solid white;*/
-          margin: 1% 0;
-      }
-  }
-  
-  @media (max-width: 680px) {
-      ul li a{
-          display: block;
-          width: 100%;
-      }
-  
-      ul.primaryNav li ul.subNav {
-              display:none;	
-              top:65%;
-              position: absolute;
-              background: #172b4d;
-              float: left;
-              left: 0;
-              text-align: center;
-              width: 100%;
-          }
-  
-              ul.primaryNav li:hover ul.subNav {
-                  display:block;				
-              }
-  
-              ul.primaryNav li:focus ul.subNav {
-                  display:block;				
-              }
-  
-          .trailblazersText h2 {
-              padding-top: 33%;
-          }
-      
-      h1 {
-          font-size: 48px;
-      }
-  
-      h2 {
-          font-size: 24px;
-      }
-  }
 
+    .diamondImgHolderLeft {
+        float: left;
+        margin: 1%;
+        width: 98%;
+        padding: 1%;
+    }
 
-.timeline-title{
+    .diamondImgHolderRight {
+        float: right;
+        margin: 1%;
+        width: 98%;
+        padding: 2%;
+    }
+
+    .timelineTextRight {
+        padding: 1%;
+        width: 100%;
+        margin: 1% 0;
+        /*border: 2px solid white;*/
+    }
+
+    .timelineTextLeft {
+        padding: 1%;
+        width: 100%;
+        /*border: 2px solid white;*/
+        margin: 1% 0;
+    }
+}
+
+@media (max-width: 680px) {
+    ul li a {
+        display: block;
+        width: 100%;
+    }
+
+    ul.primaryNav li ul.subNav {
+        display: none;
+        top: 65%;
+        position: absolute;
+        background: #172b4d;
+        float: left;
+        left: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    ul.primaryNav li:hover ul.subNav {
+        display: block;
+    }
+
+    ul.primaryNav li:focus ul.subNav {
+        display: block;
+    }
+
+    .trailblazersText h2 {
+        padding-top: 33%;
+    }
+
+    h1 {
+        font-size: 48px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}
+
+.timeline-title {
     color: white;
     text-align: center;
-    font-size:36px;
+    font-size: 36px;
     padding: 20px 0;
 }

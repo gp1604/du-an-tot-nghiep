@@ -11,7 +11,7 @@ function BannerSlide() {
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
-        autoplaySpeed: 2000,
+        autoplaySpeed: 3000,
         pauseOnHover: false,
         slickPrev: false,
         slickNext: false,
@@ -29,11 +29,11 @@ function BannerSlide() {
         getData();
     }, [])
     return (
-        <div style={{ maxWidth: '1480px', margin: 'auto' }}>
+        <div className='slide-home' style={{ width: '98.9vw', height: '100vh', overflow: "hidden", margin: 'auto', marginTop: '-9rem' }}>
             <Slider  {...settings}>
-                {data.map((i) => (
-                    <div >
-                        <img style={{ width: '100%', height: '80vh' }} src={i.photosImagePath} alt="" />
+                {data.map((i, index) => (
+                    <div key={index}>
+                        <img className='images-slide' style={{ objectFit: "cover", width: '100vw', height: '100vh', overflow: "hidden", margin: "auto !important" }} src={i.photosImagePath} alt="" />
                     </div>
                 ))}
             </Slider>

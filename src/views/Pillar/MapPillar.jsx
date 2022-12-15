@@ -27,13 +27,15 @@ const Map = ({ setLatMap, setLngMap, data, productData, updatingProduct, updatin
   function onZoomChanged() {
     setMarkerZoom(0)
   }
+
+  console.log('data', productData)
   return (
     <div>
       <GoogleMap
         defaultZoom={14}
         defaultCenter={{ lat: 12.68107, lng: 108.0354658 }}
         {...(markerLat && { center: { lat: markerLat, lng: markerLng } })}
-        zoom={updatingZoom ? updatingZoom : markerZoom > 0 ? markerZoom : 14}
+        zoom={updatingZoom ? updatingZoom : markerZoom > 0 ? markerZoom : 10}
         onZoomChanged={onZoomChanged}
         onClick={ev => {
           onChangeMakers(ev)
@@ -91,7 +93,6 @@ const Map = ({ setLatMap, setLngMap, data, productData, updatingProduct, updatin
         {productData.map((column) => (
           <Marker
             onClick={() => {
-
               setMarkerLng(column.lng)
               setMarkerLat(column.lat)
               setMarkerZoom(15)

@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { green } from "@mui/material/colors";
 import { API } from "../../utils/const";
 import { NavLink } from 'react-router-dom';
-
+import './style.css'
 
 var stompClient = null;
 const AdminNotification = (params) => {
@@ -42,31 +42,33 @@ const AdminNotification = (params) => {
     }
 
     const onMessageReceived = (payload) => {
-        setData(data => [JSON.parse(payload.body), ...data])
+        getNotification();
     }
 
     const onError = (err) => {
         console.log(err);
     }
 
-    //message, date,type,status
-    return (<>
-        {data.length > 0 ? data.map((data) => (
-            <Fragment>
-                <NavLink to={'/admin/orderPlace'}>
-                    <MenuItem sx={{ borderBottom: '1px solid #ddd' }} >
-                        <div style={{ color: 'black' }} >{data.message}  </div>
-                        <div className='notification-time' > <Moment fromNow>{data.date}</Moment></div>
-                    </MenuItem>
-                </NavLink>
-            </Fragment>
-        )) :
-            <MenuItem >
-                <div >Hiện không có thông báo ! </div>
-                <div className='notification-time' > Bây giờ</div>
-            </MenuItem>}
-    </>
+    return (
+        <div className='scrollbarNoti' id='style-1'>
+            {data.length > 0 ? data.map((data) => (
+                <Fragment>
+                    <NavLink to={'/admin/orderPlace'}>
+                        <MenuItem sx={{ borderBottom: '1px solid #ddd' }} onClick={params.onClickClose}>
+                            <li>
+                                <div style={{ color: 'black' }} >{data.message}  </div>
+                                <div style={{ color: 'rgb(177, 177, 177)' }} className='notification-time' > <Moment fromNow>{data.date}</Moment></div>
+                            </li>
+                        </MenuItem>
+                    </NavLink>
+                </Fragment>
 
+            )) :
+                <MenuItem >
+                    <div >Hiện không có thông báo ! </div>
+                    <div className='notification-time' > Bây giờ</div>
+                </MenuItem>}
+        </div>
     )
 }
 

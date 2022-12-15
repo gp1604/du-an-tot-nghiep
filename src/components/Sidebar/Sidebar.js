@@ -38,6 +38,8 @@ import jwt_decode from "jwt-decode";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { API_GET_ORDER_ADMIN } from "utils/const";
+import { API } from "utils/const";
+import { isTemplateExpression } from "typescript";
 
 var ps;
 
@@ -158,7 +160,17 @@ const Sidebar = (props) => {
       target: "_blank"
     };
   }
+  const [dataImage, setDataImage] = useState([]);
+  const getData = async () => {
+    const response = await axios.get(API + '/admin/webImage/?category=logo')
+    if (response.status === 200) {
+      setDataImage(response.data)
+    }
+  }
 
+  useEffect(() => {
+    getData();
+  }, [])
   return (
     <Navbar
       className="navbar-vertical fixed-left navbar-light bg-white style-1"
@@ -178,7 +190,16 @@ const Sidebar = (props) => {
         {logo ? (
           <NavbarBrand className="pt-0" {...navbarBrandProps}>
             <div className="music-waves-2">
-              logo
+              {
+                dataImage.map((value, index) => (
+                  <img className='logo-home' style={{
+                    width: "85px !important",
+                    height: 'auto !important'
+                  }} key={index}
+                    alt="..."
+                    src={value.photosImagePath} />
+                ))
+              }
             </div>
           </NavbarBrand>
         ) : null}

@@ -1,4 +1,3 @@
-import { CgMenuBoxed } from 'react-icons/cg';
 import { Link, useHistory } from "react-router-dom";
 import '../Navbars/style.css'
 import Badge from '@mui/material/Badge';
@@ -20,15 +19,16 @@ import { toast } from "react-toastify";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Notification from './NotificationUser';
 import { BsSuitHeartFill } from "react-icons/bs";
-import CartCount from "../../views/cart/CartCount";
+import axios from "axios";
+import { API, API_GET_CART } from "../../utils/const";
 
 const AdminNavbar = () => {
+
   let decoded;
   const history = useHistory();
-
   let token = localStorage.getItem("token");
   if (token !== null) {
     decoded = jwt_decode(token);
@@ -40,10 +40,13 @@ const AdminNavbar = () => {
     localStorage.removeItem("IdOrder")
     localStorage.removeItem("cartADD")
     localStorage.removeItem("cartTemp")
+    localStorage.removeItem("countCart")
+    localStorage.removeItem("count")
+    localStorage.removeItem("locations")
+
+    window.dispatchEvent(new Event("storage"));
     history.push('/auth/homePage')
     toast.success('Đăng xuất thành công !', { autoClose: 1500 })
-    // window.location.reload(false)
-
   }
 
   const checkRole = () => {
@@ -51,7 +54,6 @@ const AdminNavbar = () => {
       history.push('/admin/index')
     }
   }
-
   const styleLab = {
     marginRight: "7px",
     fontWeight: "400",
@@ -63,18 +65,53 @@ const AdminNavbar = () => {
     fontWeight: "400"
   }
 
+
+  if (token !== null) {
+    decoded = jwt_decode(token);
+  }
+
+  const [local, setLocal] = useState(localStorage.getItem("countCart") || 0);
+
+  useEffect(() => {
+    const listenStorageChange = () => {
+      if (localStorage.getItem("countCart") === null) {
+        setLocal(0);
+      } else {
+        setLocal(localStorage.getItem("countCart"));
+      }
+    };
+    window.addEventListener("storage", listenStorageChange);
+    return () => window.removeEventListener("storage", listenStorageChange);
+  }, []);
+
+  const [dataImage, setDataImage] = React.useState([]);
+  const getData = async () => {
+    const response = await axios.get(API + '/admin/webImage/?category=logo')
+    if (response.status === 200) {
+      setDataImage(response.data)
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, [])
+
   return (
     <>
       <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
         <Container className="px-4">
           <NavbarBrand to="/" tag={Link}>
-            {/* <img
-              alt="..."
-              src={require("../../assets/img/brand/logoDev.png")}
-            /> */}
-            {/* <h3 style={{ fontSize: "2.5em", fontWeight: 800, color: 'white' }}>LOGO</h3> */}
             <div class="typed-animation">
-              <h1 style={{ color: 'white', margin: "0" }} class="typed-out">LOGO</h1>
+              <h1 style={{ color: 'white', margin: "0", borderRadius: "15px " }} class="typed-out">
+                {
+                  dataImage.map((value, index) => (
+                    <img className='logo-home'
+                      key={index}
+                      alt="..."
+                      src={value.photosImagePath} />
+                  ))
+                }
+              </h1>
             </div>
           </NavbarBrand>
           <button className="navbar-toggler" id="navbar-collapse-main">
@@ -85,10 +122,18 @@ const AdminNavbar = () => {
               <Row>
                 <Col className="collapse-brand" xs="6">
                   <Link to="/">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/brand/argon-react.png")}
-                    />
+                    <div class="typed-animation">
+                      <h1 style={{ color: 'white', margin: "0", borderRadius: "15px " }} class="typed-out">
+                        {
+                          dataImage.map((value, index) => (
+                            <img className='logo-home'
+                              key={index}
+                              alt="..."
+                              src={value.photosImagePath} />
+                          ))
+                        }
+                      </h1>
+                    </div>
                   </Link>
                 </Col>
                 <Col className="collapse-close" xs="6">
@@ -99,7 +144,7 @@ const AdminNavbar = () => {
                 </Col>
               </Row>
             </div>
-            <Nav className="ml-auto" navbar>
+            <Nav style={{ marginRight: "40px" }} className="ml-auto" navbar >
               <NavItem>
                 <NavLink className="nav-link-icon" to="/" tag={Link}>
                   <i className="ni ni-planet" />
@@ -107,26 +152,29 @@ const AdminNavbar = () => {
                 </NavLink>
               </NavItem>
 
-
-
               {
                 token && decoded.roles === "[ROLE_ADMIN]"
                   ? ""
                   : <NavItem >
                     <NavLink className="nav-link-icon" to="/auth/cart" tag={Link}>
+                      <div style={{ display: "flex", alignItems: "center" }}
+                        className="notification">
+                        <Badge badgeContent={local} color="error"
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                          }}
+                        >
 
-                      <Badge badgeContent={<CartCount />} color="secondary"
-                        anchorOrigin={{
-                          vertical: 'top',
-                          horizontal: 'left',
-                        }}>
-                        <i className="ni ni-cart" />
-                      </Badge >
-                      <span className="nav-link-inner--text">Thanh Toán</span>
+                          <i className="ni ni-cart" />
+                        </Badge >
+
+                        <span className="nav-link-inner--text">Thanh Toán</span>
+                      </div>
+
                     </NavLink>
                   </NavItem>
               }
-
 
               {token && decoded ?
                 <NavItem >
@@ -147,52 +195,11 @@ const AdminNavbar = () => {
                   </NavLink>
                 </NavItem>}
 
-              {/* 
-              {token && decoded ? null :
-                <NavItem>
-                  <NavLink className="nav-link-icon" to="/auth/login" tag={Link}>
-                    <i className="ni ni-key-25" />
-                    <span className="nav-link-inner--text">Đăng nhập</span>
-                  </NavLink>
-                </NavItem>} */}
 
-              {/* {token && decoded ?
-                <NavItem>
-                  <NavLink className="nav-link-icon" to="/auth/profile" tag={Link}>
-                    <i className="ni ni-key-25" />
-                    <span className="nav-link-inner--text">Hồ sơ</span>
-                  </NavLink>
-                </NavItem> : ''} */}
-
-
-
-              {/* {decoded && token ? <NavItem ><NavLink
-                className="nav-link-icon"
-                tag={Link}
-              >
-                <i className="ni ni-single-02" />
-                <span className="nav-link-inner--text">{decoded.firstName + " " + decoded.lastName}</span>
-              </NavLink> </NavItem> : ''} */}
-
-
-
-              {/* {decoded && token ?
-                <NavItem>
-                  <NavLink
-                    className="nav-link-icon"
-                    to="/admin/index"
-                    tag={Link}
-                    onClick={logout}
-                  >
-                    <LogoutIcon />
-                    <span className="nav-link-inner--text">Đăng xuất</span>
-                  </NavLink>
-                </NavItem> : ''
-              } */}
 
               {token && decoded ?
                 <div className="menu">
-                  <ul className="menu-item">
+                  <ul className="menu-item" >
                     <li className="menu-item-title">
                       <NavLink onClick={checkRole} className="menu-hover nav-link-icon">
                         <i style={{ marginRight: "4px" }} className="ni ni-single-02" />
@@ -261,33 +268,6 @@ const AdminNavbar = () => {
                 </React.Fragment>
               }
 
-              {/* <NavItem>
-                <div className="menu">
-                  <ul className="menu-item">
-                    <li className="menu-item-title">
-                      <NavLink className="menu-hover nav-link-icon">
-                        <i className="ni ni-single-02" />
-                        <span className="nav-link-inner--text">{decoded.firstName + " " + decoded.lastName}</span>
-                      </NavLink>
-                      <ul className="menu-level-2">
-                        <li className="item-menu-level-2">
-                          <NavLink className="nav-link-icon" to="/auth/profile" tag={Link}>
-                            <i className="ni ni-key-25" />
-                            <span className="nav-link-inner--text">Hồ sơ</span>
-                          </NavLink>
-                        </li>
-                        <li className="item-menu-level-2">
-                          <NavLink className="nav-link-icon" to="/admin/index" tag={Link} onClick={logout}
-                          >
-                            <ExitToAppIcon />
-                            <span className="nav-link-inner--text">Đăng xuất</span>
-                          </NavLink>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-              </NavItem> */}
 
 
             </Nav>

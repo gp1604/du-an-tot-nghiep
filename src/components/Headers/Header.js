@@ -164,7 +164,7 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Tổng thu nhập
+                          Tổng doanh thu
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
                           <CurrencyFormat value={dataOverview.totalEarning} displayType={'text'} thousandSeparator={true} />
@@ -194,7 +194,7 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Thu nhập hôm nay
+                          Doanh thu hôm nay
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
                           {/* <i className="fa fa-arrow-up" />    */}

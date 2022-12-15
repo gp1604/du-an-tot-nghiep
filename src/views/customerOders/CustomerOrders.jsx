@@ -79,10 +79,6 @@ const rows = [
         density: "density"
 
     },
-    // createData('India', 'IN', 1324171354, 3287263, <Button variant="contained">Contained</Button>),
-    // createData('China', 'CN', 1403500365, 9596961, <Button variant="contained">Contained</Button>),
-    // createData('Italy', 'IT', 60483973, 301340, <Button variant="contained">Contained</Button>),
-    // createData('India', 'IN', 1324171354, 3287263, <Button variant="contained">Contained</Button>),
 ];
 
 export default function CustomerOrders() {

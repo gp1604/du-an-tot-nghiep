@@ -15,6 +15,17 @@ License - nucleoapp.com/license/
 /*------------------------
     base class definition
 -------------------------*/
+@media (min-width: 0) and (max-width: 750px) {
+  .ni {
+    margin-right: 7px;
+    display: inline-block;
+    font: normal normal normal 14px/1 NucleoIcons;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
 .ni {
   display: inline-block;
   font: normal normal normal 14px/1 NucleoIcons;

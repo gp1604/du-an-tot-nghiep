@@ -14,6 +14,7 @@ import EditAddress from 'views/pillarAddress/EditAddress'
 
 
 export default function AdminPillar() {
+  const [keyword, setKeyword] = useState('')
   const [data, setdata] = useState([])
   const [selected, setSelected] = useState(undefined)
   const [open, setOpen] = useState(false);
@@ -26,24 +27,45 @@ export default function AdminPillar() {
   const [openDelete, setOpenDelete] = useState(false)
   const handleOpenDelete = () => setOpenDelete(true);
   const handleCloseDelete = () => setOpenDelete(false);
+  const [pageCRUD, setPageCRUD] = React.useState(1);
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     fetchAPI()
   }, [])
 
   const handleChangePage = async (event, newPage) => {
-    const response = await axios.get(API_GET_ADMIN_ADDRESS + (newPage + 1) + "?dataPerPage=" + rowsPerPage + "&sort=desc" + "&sortField=id")
-    if (response) {
-      setPage(newPage);
-      setdata(response.data.content)
+    setPageCRUD(newPage + 1)
+    if (keyword == '') {
+      const response = await axios.get(API_GET_ADMIN_ADDRESS + (newPage + 1) + "?dataPerPage=" + rowsPerPage + "&sort=desc" + "&sortField=id")
+      if (response) {
+        setPage(newPage);
+        setdata(response.data.content)
+      }
+    } else {
+      const response = await axios.get(API_GET_ADMIN_ADDRESS + (newPage + 1) + "?dataPerPage=" + rowsPerPage + "&sort=desc" + "&sortField=id&keyword=" + keyword)
+      if (response) {
+        setPage(newPage);
+        setdata(response.data.content)
+      }
     }
   };
 
   const handleChangeRowsPerPage = async (event) => {
-    const response = await axios.get(API_GET_ADMIN_ADDRESS + 1 + "?dataPerPage=" + event.target.value + "&sort=desc" + "&sortField=id")
-    if (response) {
-      setdata(response.data.content)
-      setPage(0);
-      setRowsPerPage(+event.target.value);
+    setPageCRUD(1)
+    if (keyword == '') {
+      const response = await axios.get(API_GET_ADMIN_ADDRESS + 1 + "?dataPerPage=" + event.target.value + "&sort=desc" + "&sortField=id")
+      if (response) {
+        setdata(response.data.content)
+        setPage(0);
+        setRowsPerPage(+event.target.value);
+      }
+    } else {
+      const response = await axios.get(API_GET_ADMIN_ADDRESS + 1 + "?dataPerPage=" + event.target.value + "&sort=desc" + "&sortField=id&keyword=" + keyword)
+      if (response) {
+        setdata(response.data.content)
+        setPage(0);
+        setRowsPerPage(+event.target.value);
+      }
     }
   };
 
@@ -54,15 +76,23 @@ export default function AdminPillar() {
       setTotalPages(response.data.totalElements)
     }
   }
+  const fetchAPIWhenCRUD = async (e) => {
+    const response = await axios.get(API_GET_ADMIN_ADDRESS + pageCRUD + "?dataPerPage=" + rowsPerPage + "&sort=desc" + "&sortField=id")
+    if (response) {
+      setdata(response.data.content)
+      setTotalPages(response.data.totalElements)
+    }
+  }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data, setDataAddress, setOpen) => {
     if (data.city === '') {
-      toast.error("City required field", { autoClose: 1500 });
+      toast.warning("Thành phố không được để trống", { autoClose: 1500 });
     }
     else if (data.street === '') {
-      toast.error("Street required field", { autoClose: 1500 });
+      toast.warning("Đường không được để trống", { autoClose: 1500 });
     }
     else {
+      setIsLoading(true)
       try {
         const formData = new FormData();
         formData.append('multipartFile', data.multipartFile);
@@ -74,10 +104,20 @@ export default function AdminPillar() {
           toast.success("Thêm thành công", { autoClose: 1500 });
           setOpenEdit(false);
           fetchAPI();
+          setIsLoading(false)
+
+          setDataAddress({
+            city: '',
+            street: '',
+            description: '',
+            multipartFile: ''
+          })
+          setOpen(false)
         }
 
         //catch show error
       } catch (error) {
+        setIsLoading(false)
         console.log(error.response.data)
         if (error.response.data.message) {
           toast.error(`${error.response.data.message}`, {
@@ -106,58 +146,68 @@ export default function AdminPillar() {
 
   const onEdit = async (post) => {
     setSelected(post)
-    console.log("selected", post);
     setOpenEdit(true)
   }
 
   const onSubmitEdit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append('multipartFile', data.multipartFile);
-      const response = await axios.put(API_EDIT_PILLAR + "?city=" + data.city + "&description=" + data.description + "&id=" + data.id + "&street=" + data.street, formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
-      if (response && response.status === 201) {
-        toast.success("Cập nhập thành công", { autoClose: 1500 });
-        fetchAPI();
-        setOpenEdit(false)
-      }
+    if (data.city === '') {
+      toast.warning("Thành phố không được để trống", { autoClose: 1500 });
+    }
+    else if (data.street === '') {
+      toast.warning("Đường không được để trống", { autoClose: 1500 });
+    }
+    else {
+      setIsLoading(true)
+      try {
+        const formData = new FormData();
+        formData.append('multipartFile', data.multipartFile);
+        const response = await axios.put(API_EDIT_PILLAR + "?city=" + data.city + "&description=" + data.description + "&id=" + data.id + "&street=" + data.street, formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+        if (response && response.status === 201) {
+          toast.success("Cập nhập thành công", { autoClose: 1500 });
+          fetchAPIWhenCRUD();
+          setIsLoading(false)
+          setOpenEdit(false)
+        }
 
-      //catch show error
-    } catch (error) {
-      console.log(error.response.data)
-      if (error.response.data.message) {
-        toast.error(`${error.response.data.message}`, {
-          autoClose: 2000
-        })
-      }
-      else if (error.response.data.error) {
-        toast.error(`${error.response.data.error}`, {
-          autoClose: 2000
-        })
-      }
-      else if (error.response.data.error && error.response.data.message) {
-        toast.error(`${error.response.data.message}`, {
-          autoClose: 2000
-        })
-      }
-      else {
-        toast.error('Error', {
-          autoClose: 2000
-        })
+        //catch show error
+      } catch (error) {
+        setIsLoading(false)
+
+        console.log(error.response.data)
+        if (error.response.data.message) {
+          toast.error(`${error.response.data.message}`, {
+            autoClose: 2000
+          })
+        }
+        else if (error.response.data.error) {
+          toast.error(`${error.response.data.error}`, {
+            autoClose: 2000
+          })
+        }
+        else if (error.response.data.error && error.response.data.message) {
+          toast.error(`${error.response.data.message}`, {
+            autoClose: 2000
+          })
+        }
+        else {
+          toast.error('Error', {
+            autoClose: 2000
+          })
+        }
       }
     }
   }
 
   const onDelete = async (id) => {
-    console.log("id ", id);
     try {
       const response = await axios.delete(API_DELETE_PILLAR + id)
       if (response && response.status === 201) {
         setOpenDelete(false)
         toast.success("Xóa thành công", { autoClose: 1500 });
-        fetchAPI();
+        fetchAPIWhenCRUD();
       }
       //catch show error
     } catch (error) {
@@ -187,6 +237,7 @@ export default function AdminPillar() {
   }
 
   const search = async (keyword) => {
+    setKeyword(keyword)
     const response = await axios.get(API_GET_ADMIN_ADDRESS + page + 1 + "?dataPerPage=" + rowsPerPage + "&sort=desc" + "&sortField=id&keyword=" + keyword)
     if (response) {
       setdata(response.data.content)
@@ -197,8 +248,8 @@ export default function AdminPillar() {
 
   return (
     <div>
-      <CreateAddress onSubmit={onSubmit} open={open} setOpen={setOpen} />
-      {selected && <EditAddress item={selected} onSubmitEdit={onSubmitEdit} openEdit={openEdit} setOpenEdit={setOpenEdit} />}
+      <CreateAddress isLoading={isLoading} onSubmit={onSubmit} open={open} setOpen={setOpen} />
+      {selected && <EditAddress isLoading={isLoading} item={selected} onSubmitEdit={onSubmitEdit} openEdit={openEdit} setOpenEdit={setOpenEdit} />}
       <Address search={search} open={open} setOpen={setOpen} data={data} onDelete={onDelete} onEdit={onEdit} totalPages={totalPages}
         page={page} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} rowsPerPage={rowsPerPage}
         openDelete={openDelete} setOpenDelete={setOpenDelete} handleOpenDelete={handleOpenDelete} handleCloseDelete={handleCloseDelete} />

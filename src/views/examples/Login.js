@@ -13,7 +13,7 @@ import {
   Col
 } from "reactstrap";
 import { NavLink, useHistory } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { API_SIGNIN } from "utils/const";
@@ -23,6 +23,8 @@ import jwt_decode from "jwt-decode";
 import styled from "styled-components";
 import './login.css'
 import { API_ADD_CART_LOCAL } from "utils/const";
+import { API_GET_CART } from "utils/const";
+import { forEach } from "lodash";
 
 const Login = () => {
   const history = useHistory();
@@ -35,22 +37,22 @@ const Login = () => {
   if (token !== null) {
     decoded = jwt_decode(token);
   }
-  console.log('decoded', decoded);
 
-  console.log('data ,', data);
+  let arrLocations = JSON.parse(localStorage.getItem("locations"));
+  console.log("arrLocations", arrLocations);
   const onLogin = async (e) => {
     e.preventDefault();
     if (data.phoneNumber === '') {
-      toast.error('Phone number cannot be null', {
+      toast.error('Số điện thoại không được trống', {
         autoClose: 2000
       })
     } else if (data.password === '') {
-      toast.error('Password cannot be null', {
+      toast.error('Mật khẩu không được để trống', {
         autoClose: 2000
       })
     }
     else if (data.password.length < 8) {
-      toast.error('Password must have at least 8 characters', {
+      toast.error('Mật khẩu phải lớn hơn 8 kí tự', {
         autoClose: 2000
       })
     }
@@ -63,25 +65,71 @@ const Login = () => {
           toast.success('Đăng nhập thành công', {
             autoClose: 1500
           })
-
           if (jwt_decode(response?.data.token).roles === `[ROLE_USER]`) {
-            history.goBack()
+            //check role user
+            if (localStorage.getItem('countCart') == null) {
+              const response2 = await axios.get(API_GET_CART, {
+                headers: {
+                  'authorization': 'Bearer ' + response?.data.token,
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }
+              })
+              if (response) {
+                localStorage.setItem('countCart', JSON.stringify(response2.data.length));
+                window.dispatchEvent(new Event("storage"));
+              }
+            }
+
+            for (let i = arrLocations.length - 2; i < arrLocations.length; i--) {
+              console.log(arrLocations[i]);
+              if (arrLocations[i] === "/auth/register" || arrLocations[i] === "/auth/login") {
+                history.replace({ pathname: '/auth/homePage' })
+                break
+              } else if (arrLocations[i] !== "/auth/register" || arrLocations[i] !== "/auth/login") {
+                history.replace({ pathname: arrLocations[i] })
+                break
+              }
+              // history.replace({ pathname: arrLocations[i] === "auth/register" ? arrLocations[i] : '/auth/homePage' })
+            }
+
             //add cart local to database
             var myMap = new Map()
-            JSON.parse(localStorage.getItem('cartADD')).map((item) => {
-              myMap.set(item.productId, item.month);
-            })
-            const obj = Object.fromEntries(myMap);
-            const dataCart = {
-              productInfo: obj
+            if (localStorage.getItem('cartADD')) {
+              JSON.parse(localStorage.getItem('cartADD')).map((item) => {
+                myMap.set(item.productId, item.month);
+              })
+              const obj = Object.fromEntries(myMap);
+              const dataCart = {
+                productInfo: obj
+              }
+              const rs = await axios.post(API_ADD_CART_LOCAL, dataCart, {
+                headers: {
+                  'authorization': 'Bearer ' + localStorage.getItem('token'),
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                }
+              });
             }
-            const rs = await axios.post(API_ADD_CART_LOCAL, dataCart, {
+
+            //set count cart
+            const response2 = await axios.get(API_GET_CART, {
               headers: {
-                'authorization': 'Bearer ' + localStorage.getItem('token'),
+                'authorization': 'Bearer ' + response?.data.token,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
               }
-            });
+            })
+            if (response2) {
+              let arrayCart = []
+              Object.entries(response2.data).forEach(function (value, key) {
+                Object.entries(value[1]).forEach(function (value, key) {
+                  arrayCart.push(value[1])
+                })
+              })
+              localStorage.setItem('countCart', JSON.stringify(arrayCart.length));
+              window.dispatchEvent(new Event("storage"));
+            }
           }
           else if (jwt_decode(response?.data.token).roles === `[ROLE_ADMIN]`) {
             history.push('/admin/index')
@@ -120,7 +168,9 @@ const Login = () => {
   const styledBtn = styled.input`
   border:none;
   `
-
+  useEffect(() => {
+    document.title = 'ACN | Login';
+  })
 
   return (
     <>

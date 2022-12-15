@@ -23,8 +23,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-
 import AddIcon from '@mui/icons-material/Add';
+import { alpha, styled } from '@mui/material/styles';
+import { pink } from '@mui/material/colors';
+import Switch from '@mui/material/Switch';
+
+
+const label = { inputProps: { 'aria-label': 'Color switch demo' } };
 const columns = [
     { id: 'Id', label: 'Id', minWidth: 70, maxWidth: 70 },
     {
@@ -48,7 +53,13 @@ const columns = [
         align: 'center',
         format: (value) => value.toLocaleString('en-US'),
     },
-
+    {
+        id: 'active',
+        label: 'Hiện ảnh',
+        minWidth: 100,
+        align: 'center',
+        format: (value) => value.toLocaleString('en-US'),
+    },
     {
         id: 'action',
         label: 'Hành động',
@@ -91,7 +102,7 @@ export default function Picture({ data, setOpen, search, onEdit, onDelete }) {
     const handleCloseConfirm = () => {
         setOpenConFirm(false);
     };
-
+    console.log('dât image ', data)
     return (
         <>
             <Container fluid style={{ height: "200px" }} className="header bg-gradient-info pb-8 pt-5 pt-md-8 ">
@@ -106,7 +117,7 @@ export default function Picture({ data, setOpen, search, onEdit, onDelete }) {
                                 <AddIcon sx={{ color: "#FFFFFF", fontSize: "40px", width: "100%" }} />
                             </Box>
                         </Grid>
-                        <Grid item xs={10}>
+                        {/* <Grid item xs={10}>
                             <Paper sx={{ boxShadow: "none", border: "1px solid #ddd", display: 'flex', padding: '7px 7px 3px 7px', width: '100%', marginBottom: '20px', borderRadius: '7px' }}>
                                 <IconButton type="button" sx={{ p: '0px', }} aria-label="search">
                                     <SearchIcon />
@@ -117,7 +128,7 @@ export default function Picture({ data, setOpen, search, onEdit, onDelete }) {
                                     placeholder="Tìm kiếm"
                                 />
                             </Paper>
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
                     <TableContainer sx={{ height: '61vh' }}>
@@ -147,7 +158,7 @@ export default function Picture({ data, setOpen, search, onEdit, onDelete }) {
                                             </TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}>  {item.image} </TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}> {item.category}</TableCell>
-
+                                            <TableCell sx={{ textAlign: 'center' }}> <Switch {...label} checked={item.active} color="secondary" /></TableCell>
                                             {/* <TableCell sx={{ textAlign: 'center', display: "flex", justifyContent: "space-around" }}>
                                                 <DeleteIcon sx={{ cursor: 'pointer', marginRight: '39%' }} onClick={e => {
                                                     handleClickOpenConfirm()
@@ -159,7 +170,6 @@ export default function Picture({ data, setOpen, search, onEdit, onDelete }) {
                                                 <UncontrolledDropdown>
                                                     <DropdownToggle
                                                         className="btn-icon-only text-light"
-                                                        href="#pablo"
                                                         role="button"
                                                         size="sm"
                                                         color=""

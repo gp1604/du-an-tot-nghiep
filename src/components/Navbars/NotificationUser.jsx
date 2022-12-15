@@ -1,22 +1,56 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './style.css'
-import Button from '@mui/material/Button';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Grow from '@mui/material/Grow';
-import Paper from '@mui/material/Paper';
-import Popper from '@mui/material/Popper';
-import MenuItem from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
-import Stack from '@mui/material/Stack';
 import Notifications from '@mui/icons-material/Notifications';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import axios from 'axios';
-import { API_GET_TEST } from 'utils/const';
-import AdminNotification from 'views/Realtime/AdminNotification';
 import UserNotification from 'views/Realtime/UserNotification';
 import jwt_decode from "jwt-decode";
 import { API_GET_MARK_AS_READ } from 'utils/const';
-import UserSize from 'views/Realtime/UserSize';
+import { alpha, styled } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import Badge from "@mui/material/Badge";
 
+
+const StyledMenu = styled((props) => (
+    <Menu
+        elevation={0}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        {...props}
+    />
+))(({ theme }) => ({
+    '& .MuiPaper-root': {
+        borderRadius: 6,
+        marginTop: theme.spacing(1),
+        minWidth: 180,
+        color:
+            theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+        boxShadow:
+            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+        '& .MuiMenu-list': {
+            padding: '4px 0',
+        },
+        '& .MuiMenuItem-root': {
+            '& .MuiSvgIcon-root': {
+                fontSize: 18,
+                color: theme.palette.text.secondary,
+                marginRight: theme.spacing(1.5),
+            },
+            '&:active': {
+                backgroundColor: alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.selectedOpacity,
+                ),
+            },
+        },
+    },
+}));
 
 function Notification() {
     let decoded;
@@ -29,105 +63,65 @@ function Notification() {
 
 
     const markAsRead = async () => {
-        const response = await axios.post(API_GET_MARK_AS_READ + Number(decoded.sub.slice(0, 1)))
-        console.log('go here mark as read');
+         await axios.post(API_GET_MARK_AS_READ + Number(decoded.sub.slice(0, 1)))
     }
-
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
-    const handleToggle = () => {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
         markAsRead()
-        setUserCount(0)
-        setOpen((prevOpen) => !prevOpen);
-
-    }
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
-        }
-        setOpen(false);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+        markAsRead()
     };
 
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        } else if (event.key === 'Escape') {
-            setOpen(false);
-        }
-    }
-    // return focus to the button when we transitioned from !open -> open
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
-            markAsRead()
-            setUserCount(0)
-        }
+    useEffect(() => {
 
-        prevOpen.current = open;
-    }, [open]);
+    }, [countUser]);
+
 
     return (
-        <React.Fragment>
-            <Stack direction="row" style={{ cursor: 'pointer' }} spacing={2}>
-                <div className='menu-lv2-noti'>
-                    <p
-                        style={{ margin: "0" }}
-                        ref={anchorRef}
-                        id="composition-button"
-                        aria-controls={open ? 'composition-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleToggle}>
+        <div>
+            <div style={{ display: 'none' }}>
+                <UserNotification changeUserCount={(data) => setUserCount(data)} />
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}
+                className="notification">
+                <Badge badgeContent={countUser} color="error"
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}>
+                </Badge >
 
+            </div>
+            <div
+                id="demo-customized-button"
+                aria-controls={open ? 'demo-customized-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                variant="contained"
+                disableElevation
+                style={{cursor: 'pointer'}}
+                onClick={handleClick}
 
-                        <div style={{ display: "flex", alignItems: "center" }} class="notification">
-                            <Notifications style={{ width: "21px", height: "21px", marginLeft: "-2px" }} />
-                            <span style={{ color: "#172b4d !important", fontWeight: "400" }} className="nav-link-inner--text">Thông báo</span>
-                            {countUser !== 0 ? <span class="badge">{countUser}</span> : ''}
-
-                            {/* <span> <NotificationsNoneIcon /></span> */}
-                        </div>
-
-                        {/* <div style={{ display: 'none' }}>
-                            <UserNotification changeCount={(data) => setUserCount(data)} />
-                        </div> */}
-                        <UserSize changeUserCount={(data) => setUserCount(data)}></UserSize>
-                    </p>
-                    <Popper
-                        open={open}
-                        anchorEl={anchorRef.current}
-                        role={undefined}
-                        placement="bottom-start"
-                        transition
-                        disablePortal
-                    >
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}>
-                                <Paper>
-                                    <div className="scrollbar" id="style-1">
-                                        <ClickAwayListener onClickAway={handleClose}>
-                                            <MenuList
-                                                style={{ width: '335px', position: 'relative' }}
-                                                autoFocusItem={open}
-                                                onClick={handleClose}
-                                                id="composition-menu"
-                                                aria-labelledby="composition-button"
-                                                onKeyDown={handleListKeyDown}>
-                                                <UserNotification changeUserCount={(data) => setUserCount(data)} />
-                                            </MenuList>
-                                        </ClickAwayListener>
-                                    </div>
-                                </Paper>
-                            </Grow>
-                        )}
-                    </Popper>
-                </div>
-            </Stack>
-
-        </React.Fragment>
+            >
+                <NotificationsNoneIcon />
+                <span className="nav-link-inner--text">Thông báo</span>
+            </div>
+            <StyledMenu
+                id="demo-customized-menu"
+                MenuListProps={{
+                    'aria-labelledby': 'demo-customized-button',
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+            >
+                <UserNotification onClickClose={handleClose} changeUserCount={(data) => setUserCount(data)} />
+            </StyledMenu>
+        </div>
     )
 }
 

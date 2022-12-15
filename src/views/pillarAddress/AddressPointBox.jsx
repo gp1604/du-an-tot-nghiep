@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { styled } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -19,47 +20,50 @@ import {
 } from "../../utils/const";
 import Map from "./MapTest";
 import { DirectionsService } from "@react-google-maps/api";
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
 
-const columnsDetail = [
-  { id: 'id', label: 'Id', minWidth: 70 },
+const columns = [
+  { id: 'id', label: 'Id', minWidth: 10, maxWidth: 10 },
+
   {
-    id: 'month',
-    label: 'Số tháng thuê',
-    minWidth: 150,
-    align: 'center',
-    format: (value) => value.toLocaleString('en-US'),
-  }, {
     id: 'name',
-    label: 'Tên trụ',
-    minWidth: 170,
-    align: 'center',
-    format: (value) => value.toLocaleString('en-US'),
-  }, {
-    id: 'price',
-    label: 'Giá tiền',
-    minWidth: 150,
-    align: 'center',
-    format: (value) => value.toLocaleString('en-US'),
-  }, {
-    id: 'description',
-    label: 'Mô tả',
-    minWidth: 170,
-    align: 'center',
-    format: (value) => value.toLocaleString('en-US'),
-  }, {
-    id: 'address',
-    label: 'Địa chỉ',
-    minWidth: 170,
+    label: 'Tên',
+    minWidth: 100,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
+  {
+    id: '',
+    label: 'Lat',
+    minWidth: 100,
+    align: 'center',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+
+  {
+    id: '',
+    label: 'Lng',
+    minWidth: 100,
+    align: 'center',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+  {
+    id: '',
+    label: '',
+    minWidth: 70,
+    align: 'center',
+    format: (value) => value.toLocaleString('en-US'),
+  },
+
 ];
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 1300,
+  width: '90vw',
+  height: 750,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -95,7 +99,6 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
   useEffect(() => {
     if (updatingStatus === false) {
       if (openDetail === true) {
-        console.log("yo")
         fetchData(addressId);
         setOpen(true);
       }
@@ -123,18 +126,22 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
 
   const addAddressPoint = async (addressId) => {
     try {
-      const response = await axios.put(API_ADD_ADDRESS_POINT, JSON.stringify(input), {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+      if (name === '') {
+        toast.warning("Không được để trống name ", { autoClose: 1500 })
+      } else {
+        const response = await axios.put(API_ADD_ADDRESS_POINT, JSON.stringify(input), {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        })
+        if (response.status === 200) {
+          setRandom(Math.random());
+          clear();
+          toast.success("Thêm thành công", { autoClose: 1500 })
         }
-      })
-      if (response.status === 200) {
-        setRandom(Math.random());
-        clear();
-        toast.success("Thêm thành công", { autoClose: 1500 })
-      }
 
+      }
     } catch (error) {
       if (error.response.data.message) {
         toast.error(`${error.response.data.message}`, {
@@ -147,7 +154,7 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
 
   const addAddressPointBehind = async (addressId, pointId) => {
     try {
-      if (data.name === " ") {
+      if (data.name === "") {
         toast.error("Không được để trống địa chỉ", { autoClose: "1500" })
       } else {
 
@@ -197,9 +204,13 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
     }
   }
 
-
   function handleChange(e) {
     setName(e.target.value);
+
+
+  }
+
+  useEffect(() => {
     setInput({
       ...input,
       addressId: addressId,
@@ -207,26 +218,7 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
       lng: lng,
       name: name
     })
-  }
-  const directionsService = new google.maps.DirectionsService();
-  const directionsRenderer = new google.maps.DirectionsRenderer();
-
-  function calculateAndDisplayRoute(directionsService: google.maps.DirectionsService,
-    directionsRenderer: google.maps.DirectionsRenderer) {
-    directionsService
-      .route({
-        origin: { lat: data[0].lat, lng: data[0].lng },
-        destination: { lat: data[data.length - 1].lat, lng: data[data.length - 1].lng },
-        travelMode: google.maps.TravelMode.DRIVING,
-      }
-
-      )
-  }
-
-  function MapDraw() {
-    calculateAndDisplayRoute(directionsService, directionsRenderer);
-  }
-
+  }, [name]);
   function updatePoint(data) {
     setUpdating(true);
     setLat(data.lat);
@@ -289,6 +281,9 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
     }
   }, [updatingStatus, updatingItem]);
 
+  const StyledTableCell = styled(TableCell)({
+    padding: '4px 16px',
+  })
   return (
     <React.Fragment>
       <Modal
@@ -297,101 +292,175 @@ function AddressPointBox({ openDetail, closeDetail, addressId }) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box  sx={style}>
-          <Paper sx={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
-            <TableContainer sx={{ height: '550px' }}>
-              <Table aria-label="sticky table">
-                <TableHead>
-                  <TableCell>
-                    {updating ? <input type="number" value={updateId} /> : null}
+        <>
+          <Box sx={{
+            width: '95%',
+            height: "95%",
+            position: 'absolute',
+            transform: "translate(-50%, -50%)",
+            backgroundColor: 'white',
+            padding: '10px',
+            top: "50%",
+            left: "50%"
+          }}>
+            <div onClick={() => closeDetail()}
+              style={{
+                position: 'absolute', color: 'red', cursor: 'pointer'
+                , fontWeight: '700', fontSize: '1.2em', top: '0', left: "98.5%"
+              }}>X</div>
+            {/* sx={{ width: '100%', overflow: 'hidden', height: "100%", }} */}
+            <Paper sx={{ width: '100%', overflow: 'hidden', height: "100%", }}>
+              <Grid sx={{ display: "flex", flexDirection: "row", margin: "5px 0px", width: "100%" }} container spacing={1}>
+                <Grid item xs={3} >
+                  <TextField label="name" onChange={handleChange} value={name} type="text" />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField label='Lat' value={lat} />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField value={lng} label='Lng' />
+                </Grid>
 
-                  </TableCell>
-                  <TableCell>
-                    name:
-                    <input type="text" value={name} onChange={handleChange} />
-
-                  </TableCell>
-                  <TableCell>
-                    lat:
-                    <input type="text" value={lat} />
-
-                  </TableCell>
-
-                  <TableCell>
-                    lng:
-                    <input type="text" value={lng} />
-                  </TableCell>
-                  <TableCell>
-                    {updating ? <>
-                      <Button onClick={() => { onUpdatePoint(updateId, input) }}>Update</Button>
-                      <Button onClick={() => { onCancelUpdate() }}>X</Button>
+                {updating ? <>
+                  <Grid item xs={3}>
+                    <Button color='success' onClick={() => { onUpdatePoint(updateId, input) }}>Cập nhập</Button>
+                    <Button color='warning' onClick={() => { onCancelUpdate() }}>X</Button>
+                  </Grid>
+                </>
+                  : data.length < 2 ?
+                    <>
+                      <StyledTableCell />
+                      <StyledTableCell> <Button color='success' onClick={() => addAddressPoint(addressId)}>Thêm</Button></StyledTableCell>
                     </>
-                      : data.length < 2 ? <button onClick={() => addAddressPoint(addressId)}>Thêm</button> : null}
-                  </TableCell>
+                    : null}
+              </Grid>
+              <TableContainer sx={{ height: '95vh' }}>
+                <StyledTableCell>
+                  {updating ? updateId : null}
+                </StyledTableCell>
+                <Table aria-label="sticky table" >
 
-                  {data.map((column) => (
+                  <TableHead sx={{ borderBottom: '1px solid #ddd', borderTop: "1px solid #ddd" }}>
+
+
+
+                    {/* <div className='mt-2 mr-5 h5 font-weight-bold'>
+                        <span>Name:</span>
+                        <input type="text" value={name} onChange={handleChange} />
+                      </div>
+                      <div className='mt-2 mr-5 h5 font-weight-bold'>
+                        lat:
+                        <input type="text" value={lat} />
+                      </div>
+                      <div className='mt-2 mr-5 h5 font-weight-bold'>
+                        lng:
+                        <input type="text" value={lng} />
+                      </div> */}
+
                     <TableRow>
-
-                      <TableCell>
-                        {column.id}
-                      </TableCell>
-                      <TableCell>
-                        {column.name}
-                      </TableCell>
-                      <TableCell>
-                        {column.lng}
-                      </TableCell>
-                      <TableCell>
-                        {column.lat}
-                      </TableCell>
-                      <TableCell>
-                        {column.number}
-                      </TableCell>
-                      <TableCell>
-                        <Button onClick={() => addAddressPointBehind(addressId, column.id)} sx={{ height: '3.2em', width: "15%" }} variant="contained" color="success">
-                          behind
-                        </Button>
-                      </TableCell>
-
-                      <TableCell>
-                        <Button onClick={() => deletePoint(column.id)} sx={{ height: '3.2em', width: "15%" }} variant="contained" color="warning">
-                          X
-                        </Button>
-                      </TableCell>
-
-                      <TableCell>
-                        <Button onnClick={() => updatePoint(column)} sx={{ height: '3.2em', width: "15%" }} variant="contained" color="success">
-                          U
-                        </Button>
-                      </TableCell>
+                      {columns.map((column) => (
+                        <TableCell
+                          sx={{ color: 'black', fontWeight: '600', fontSize: '1em' }}
+                          key={column.id}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth, maxWidth: column.maxWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
                     </TableRow>
-                  ))
-                  }
-                </TableHead>
-                <TableBody>
+                  </TableHead>
+                  <TableBody>
+                    {data.map((column, index) => (
+                      <TableRow hover role="checkbox" key={index}>
+                        <TableCell>{column.id}</TableCell>
 
-                </TableBody>
-                <Button onClick={MapDraw} sx={{ height: '3.2em', width: "15%" }} variant="contained" color="success">
-                  Test
-                </Button>
-              </Table>
-              <Map
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places`}
-                loadingElement={<div style={{ height: `100%` }} />}
-                containerElement={<div style={{ height: `90vh`, margin: `auto`, border: '2px solid black' }} />}
-                mapElement={<div style={{ height: `100%` }} />}
-                setLatMap={setLat}
-                setLngMap={setLng}
-                data={data}
-                setUpdatingItem={setUpdatingItem}
-                setUpdatingStatus={setUpdatingStatus}
-                finish={setUpdatingStatus}
-              />
-            </TableContainer>
+                        <TableCell sx={{ textAlign: 'center' }}> {column.name}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}> {column.lng} </TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>  {column.lat}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}> {column.number}</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          <Button onClick={() => addAddressPointBehind(addressId, column.id)} variant="contained" color="success">
+                            Thêm
+                          </Button>
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          <Button onClick={() => {
+                            updatePoint(column)
+                          }} variant="contained" color="success">
+                            Sửa
+                          </Button>
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          <Button onClick={() => deletePoint(column.id)} variant="contained" color="warning">
+                            X
+                          </Button>
+                        </TableCell>
+                      </TableRow>
 
-          </Paper>
 
-        </Box>
+                      // <TableRow>
+                      //   <StyledTableCell>
+                      //     {column.id}
+                      //   </StyledTableCell>
+                      //   <StyledTableCell>
+                      //     {column.name}
+                      //   </StyledTableCell>
+                      //   <StyledTableCell>
+                      //     {column.lng}
+                      //   </StyledTableCell>
+                      //   <StyledTableCell>
+                      //     {column.lat}
+                      //   </StyledTableCell>
+                      //   <StyledTableCell>
+                      //     {column.number}
+                      //   </StyledTableCell>
+                      //   <StyledTableCell>
+                      //     <Button onClick={() => addAddressPointBehind(addressId, column.id)} sx={{ height: '3.2em', width: "15%" }} variant="contained" color="success">
+                      //       Thêm
+                      //     </Button>
+                      //   </StyledTableCell>
+
+                      //   <StyledTableCell>
+                      //     <Button onClick={() => {
+                      //       updatePoint(column)
+                      //     }
+
+                      //     } sx={{ height: '3.2em', width: "15%" }} variant="contained" color="success">
+                      //       Sửa
+                      //     </Button>
+                      //   </StyledTableCell>
+
+                      //   <StyledTableCell>
+                      //     <Button onClick={() => deletePoint(column.id)} sx={{ height: '3.2em', width: "15%" }} variant="contained" color="warning">
+                      //       X
+                      //     </Button>
+                      //   </StyledTableCell>
+                      // </TableRow>
+                    ))
+                    }
+                  </TableBody>
+
+                </Table>
+                <Map
+                  googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places`}
+                  loadingElement={<div style={{ height: `100%` }} />}
+                  containerElement={<div style={{ height: `80%`, margin: `auto`, border: '2px solid black', width: '100%' }} />}
+                  mapElement={<div style={{ height: `100%` }} />}
+                  setLatMap={setLat}
+                  setLngMap={setLng}
+                  data={data}
+                  setUpdatingItem={setUpdatingItem}
+                  setUpdatingStatus={setUpdatingStatus}
+                  finish={setUpdatingStatus}
+                />
+              </TableContainer>
+
+            </Paper>
+
+          </Box>
+        </>
+
       </Modal>
 
     </React.Fragment >

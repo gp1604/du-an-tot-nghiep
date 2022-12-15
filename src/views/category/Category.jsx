@@ -23,7 +23,7 @@ import { OndemandVideoTwoTone, SettingsPowerRounded } from '@mui/icons-material'
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 const columns = [
-    { id: 'Id', label: 'Id', minWidth: 70, maxWidth: 70 },
+    { id: 'Id', label: 'Id', minWidth: 10, maxWidth: 70 },
     {
         id: 'Name',
         label: 'Tên loại trụ',
@@ -50,17 +50,6 @@ const columns = [
 ];
 
 export default function Category({ handleOpenDelete, search, openDelete, handleCloseDelete, data, setOpen, onEdit, onDelete, totalPages, handleChangePage, handleChangeRowsPerPage, page, rowsPerPage }) {
-    // const [page, setPage] = React.useState(0);
-    // const [rowsPerPage, setRowsPerPage] = React.useState(6);
-
-    // const handleChangePage = (event, newPage) => {
-    //     setPage(newPage);
-    // };
-
-    // const handleChangeRowsPerPage = (event) => {
-    //     setRowsPerPage(+event.target.value);
-    //     setPage(0);
-    // };
     const handleOpen = () => setOpen(true);
     const [idDelete, setIdDelete] = React.useState(Number);
 
@@ -81,7 +70,7 @@ export default function Category({ handleOpenDelete, search, openDelete, handleC
                                 <AddIcon sx={{ color: "#FFFFFF", fontSize: "40px", width: "100%" }} />
                             </Box>
                         </Grid>
-                        <Grid item xs={8.7}>
+                        {/* <Grid item xs={8.7}>
                             <Paper sx={{ boxShadow: "none", border: "1px solid #ddd", display: 'flex', padding: '7px 7px 3px 7px', width: '100%', marginBottom: '20px', borderRadius: '7px' }}>
                                 <IconButton type="button" sx={{ p: '0px', }} aria-label="search">
                                     <SearchIcon />
@@ -92,7 +81,7 @@ export default function Category({ handleOpenDelete, search, openDelete, handleC
                                     placeholder="Tìm kiếm"
                                 />
                             </Paper>
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
 
@@ -123,8 +112,8 @@ export default function Category({ handleOpenDelete, search, openDelete, handleC
                                             <TableCell sx={{ textAlign: 'center' }}>  {item.name} </TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}> {item.description}</TableCell>
 
-                                            <TableCell sx={{ textAlign: 'right', display: "flex", justifyContent: "space-around" }}>
-                                                <DeleteIcon sx={{ cursor: 'pointer' }} onClick={e => {
+                                            <TableCell sx={{ textAlign: 'right', display: "flex", justifyContent: "center" }}>
+                                                <DeleteIcon sx={{ cursor: 'pointer', marginRight: "10px" }} onClick={e => {
                                                     handleOpenDelete()
                                                     setIdDelete(item.id)
                                                 }} />
@@ -139,7 +128,7 @@ export default function Category({ handleOpenDelete, search, openDelete, handleC
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
-                                    <Box className='form-add-product'
+                                  <Box className='form-add-address'
                                         sx={{
                                             width: '40%',
                                             position: 'relative',
@@ -156,8 +145,8 @@ export default function Category({ handleOpenDelete, search, openDelete, handleC
                                         <div style={{ borderBottom: "1px solid #ddd", margin: "0px 10px" }} />
 
                                         <div style={{ display: "flex", justifyContent: "center", margin: "10px" }}>
-                                            <button onClick={handleCloseDelete} style={{ width: "110px" }} type="button" class="btn btn-primary">Huỷ</button>
-                                            <button onClick={(e) => onDelete(idDelete)} style={{ width: "110px" }} type="button" class="btn btn-primary">Xác nhận</button>
+                                            <button onClick={handleCloseDelete} style={{ width: "110px" }} type="button" className="btn btn-primary">Huỷ</button>
+                                            <button onClick={(e) => onDelete(idDelete)} style={{ width: "110px" }} type="button" className="btn btn-primary">Xác nhận</button>
                                         </div>
 
                                     </Box>

@@ -15,7 +15,7 @@ import {
 } from "../../utils/const";
 import Map from "./MapPillar";
 
-export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dataCategory }) {
+export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dataCategory, added, isLoading }) {
     const [addressPoint, setAddressPoint] = useState([])
 
     const [lat, setLat] = useState(0)
@@ -45,7 +45,19 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
 
     const handleClose = () => {
         setOpen(false);
-
+        setData({
+            addressId: 0,
+            categoryId: 0,
+            description: "",
+            status: "AVAILABLE",
+            multipartFile: '',
+            name: "",
+            price: 0,
+            lat: 0,
+            lng: 0,
+            num1: 0,
+            num2: 0,
+        })
     }
 
 
@@ -55,7 +67,7 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
 
     const onClickAdd = (e) => {
         e.preventDefault()
-        onSubmit(data)
+        onSubmit(data, setData)
     }
 
     const fetchData = async (id) => {
@@ -95,7 +107,6 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
             fetchAddressData()
             fetchData(valueStateAddress)
         }
-
     }, [valueStateAddress])
 
     useEffect(() => {
@@ -105,6 +116,8 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
     useEffect(() => {
         setData({ ...data, num1: selected.num1, num2: selected.num2 })
     }, [selected])
+
+
     //scroll select
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -132,20 +145,24 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
                     backgroundColor: 'white',
                     padding: '10px',
                     top: "50%",
-                    left: "50%"
+                    left: "50%",
+                    height: "96% !important"
                 }}
             >
                 <h2 style={{ textAlign: 'center' }}>Thêm trụ</h2>
                 <div className='modal-contents'>
-                    <div style={{ display: 'flex', flexDirection: "column", margin: "10px" }} className="form-flex content-1">
-                        <TextField style={{ margin: '5px -5px 5px 5px' }} accept="image/*" name='multipartFile' onChange={(e) => setData({ ...data, multipartFile: e.target.files[0] })} multiple type="file" />
-                        <TextField onChange={onChangeText} defaultValue='' name="name" style={{ margin: '5px' }} fullWidth label='Tên' />
-                        <TextField type="number" onChange={onChangeText} defaultValue='' name="price" style={{ margin: '5px' }} fullWidth label='Giá' />
-                        <TextField onChange={onChangeText} defaultValue='' name="description" style={{ margin: '5px' }} fullWidth label='Chú thích' />
-                        <TextField defaultValue='' value={lat} name="lat" style={{ margin: '5px' }} fullWidth />
-                        <TextField defaultValue='' value={lng} name="lng" style={{ margin: '5px' }} fullWidth />
+                    <div style={{
+                        display: 'flex', flexDirection: "column", margin: '5px 0px', overflowY: "auto",
+                        overflowX: "hidden",
+                    }} className="form-flex content-1">
+                        <TextField style={{ margin: '5px 0px' }} accept="image/*" name='multipartFile' onChange={(e) => setData({ ...data, multipartFile: e.target.files[0] })} multiple type="file" />
+                        <TextField onChange={onChangeText} defaultValue='' name="name" style={{ margin: '5px 0px' }} fullWidth label='Tên' />
+                        <TextField type="number" onChange={onChangeText} defaultValue='' name="price" style={{ margin: '5px 0px' }} fullWidth label='Giá' />
+                        <TextField onChange={onChangeText} defaultValue='' name="description" style={{ margin: '5px 0px' }} fullWidth label='Chú thích' />
+                        <TextField defaultValue='' value={lat} name="lat" style={{ margin: '5px 0px' }} fullWidth />
+                        <TextField defaultValue='' value={lng} name="lng" style={{ margin: '5px 0px' }} fullWidth />
 
-                        <FormControl fullWidth sx={{ margin: "5px" }}>
+                        <FormControl fullWidth sx={{ margin: '5px 0px' }}>
                             <InputLabel id="demo-simple-select-label">Loại trụ</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -160,7 +177,7 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
                                 ))}
                             </Select>
                         </FormControl>
-                        <FormControl fullWidth sx={{ margin: "5px" }}>
+                        <FormControl fullWidth sx={{ margin: '5px 0px' }}>
                             <InputLabel id="demo-simple-select-label">Địa chỉ</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -185,8 +202,8 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
                                                 setSelected({ num1: item.number, num2: addressPoint[index + 1].number, selected: true })}
                                             className={selected.num1 === item.number ? "point selected" : "point"}
                                         >
-                                            {item.number} +
-                                            {addressPoint[index + 1].number}
+                                            {item.name + ' '} -
+                                            {' ' + addressPoint[index + 1].name}
                                         </div> : null
                                     }
                                 </div>
@@ -197,7 +214,7 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
                         <Map
                             googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places`}
                             loadingElement={<div style={{ height: `90%` }} />}
-                            containerElement={<div style={{ height: `100%`, margin: `auto`, border: '2px solid black' }} />}
+                            containerElement={<div style={{ height: `96%`, margin: `auto`, border: '2px solid black' }} />}
                             mapElement={<div style={{ height: `100%` }} />}
                             setLatMap={setLat}
                             setLngMap={setLng}
@@ -208,12 +225,16 @@ export default function CreatePillar({ onSubmit, open, setOpen, dataAddress, dat
 
                     </div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div style={{
+                    display: "flex", position: "absolute",
+                    left: "inherit",
+                    bottom: "30px"
+                }}>
                     <Button sx={{ marginRight: "5px" }} onClick={handleClose} variant="contained" color="success">
                         Đóng
                     </Button>
-                    <Button onClick={onClickAdd} type='submit' variant="contained" color="success">
-                        Thêm
+                    <Button disabled={isLoading} onClick={onClickAdd} type='submit' variant="contained" color="success">
+                        {isLoading ? "Xin chờ..." : "Thêm"}
                     </Button>
                 </div>
 

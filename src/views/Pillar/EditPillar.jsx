@@ -14,7 +14,7 @@ import {
     API_GET_ADDRESS_POINT_BY_ID
 } from "../../utils/const";
 
-export default function EditPillar({ item, dataAddress, openEdit, setOpenEdit, onSubmitEdit, dataCategory, updated, setClickedProduct }) {
+export default function EditPillar({ isLoading, item, dataAddress, openEdit, setOpenEdit, onSubmitEdit, dataCategory, updated, setClickedProduct }) {
     const [selected, setSelected] = useState({
         num1: 0,
         num2: 0,
@@ -184,57 +184,48 @@ export default function EditPillar({ item, dataAddress, openEdit, setOpenEdit, o
         >
             <Box className='form-add-product'
                 sx={{
-                    width: '40%',
+                    width: '100%',
                     position: 'relative',
                     transform: "translate(-50%, -50%)",
                     backgroundColor: 'white',
                     padding: '10px',
                     top: "50%",
-                    left: "50%"
+                    left: "50%",
+                    height: "89% !important"
                 }}
             >
                 <h2 style={{ textAlign: 'center' }}>Sửa thông tin trụ</h2>
                 <div className='modal-contents'>
+                    <div style={{
+                        display: 'flex', flexDirection: "column", maxHeight: "100%",
+                        overflowY: "scroll",
+                        overflowX: "hidden",
 
-                    <div style={{ display: 'flex', flexDirection: "column-reverse", margin: "10px" }} className="form-flex content-1">
-                        {addressPoint.map?.((item, index) => (
-                            <div key={index} style={{ display: 'flex', flexDirection: "column", margin: "10px" }} className="form-flex">
-                                <div>
-                                    {addressPoint.length - 1 > index ?
-                                        <div
-                                            onClick={() => {
-                                                onClickSelected(item.number, addressPoint[index + 1].number)
-                                            }
-                                            }
-                                            className={dataEdit.num1 === item.number ? "point selected" : "point"}
-                                        >
-                                            {item.name ? item.name : ""} +
-                                            {addressPoint[index + 1].name ? addressPoint[index + 1].name : ""}
-                                        </div> : null
-                                    }
-                                </div>
-                            </div>
-                        ))}
-
-                        <FormControl fullWidth sx={{ margin: "5px" }}>
-                            <InputLabel id="demo-simple-select-label">Mã địa chỉ</InputLabel>
+                    }} className="form-flex content-1">
+                        <TextField
+                            onChange={onChangeImage} style={{ margin: '5px 0px' }} name="multipartFile" type="file" multiple accept="image*/*" />
+                        <TextField
+                            value={dataEdit.name} onChange={onChangeText} name="name" style={{ margin: '5px 0px' }} fullWidth label='Tên' />
+                        {/* <img style={{ width: "20px" }} src={dataEdit.multipartFile} alt="" /> */}
+                        <TextField
+                            value={dataEdit.price} type="number" onChange={onChangeText} name="price" style={{ margin: '5px 0px' }} fullWidth label='Giá' />
+                        <TextField value={dataEdit.description} onChange={onChangeText} name="description" style={{ margin: '5px 0px' }} fullWidth label='Chú thích' />
+                        <FormControl fullWidth sx={{ margin: '5px 0px' }}>
+                            <InputLabel id="demo-simple-select-label">Loại trụ</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={dataEdit.addressId}
-                                defaultValue={addressId}
+                                value={dataEdit.categoryId}
                                 label="Mã địa chỉ"
-                                MenuProps={MenuProps}
-                                onChange={handleChangeAddress}
+                                onChange={handleChangeCategory}
                             >
-                                {dataAddress.map((item, index) => (
-                                    <MenuItem key={index} value={item.id}>{item.city} {item.street}</MenuItem>
+                                {dataCategory.map((item, index) => (
+                                    <MenuItem
+                                        key={index} value={item.id}>{item.name}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
-                        <TextField defaultValue='' value={dataEdit.lat} name="lat" style={{ margin: '5px' }} fullWidth />
-                        <TextField defaultValue='' value={dataEdit.lng} name="lng" style={{ margin: '5px' }} fullWidth />
-                        <FormControl fullWidth sx={{ margin: "5px" }}>
+                        <FormControl fullWidth sx={{ margin: '5px 0px' }}>
                             <InputLabel id="demo-simple-select-label">Mã trạng thái</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -250,51 +241,50 @@ export default function EditPillar({ item, dataAddress, openEdit, setOpenEdit, o
 
                             </Select>
                         </FormControl>
-
-
-
-                        <FormControl fullWidth sx={{ margin: "5px" }}>
-                            <InputLabel id="demo-simple-select-label">Loại trụ</InputLabel>
+                        <TextField inputProps={{
+                            style: {
+                                padding: 7
+                            }
+                        }} defaultValue='' value={dataEdit.lng} name="lng" style={{ padding: "5px 0px", margin: '5px 0px' }} fullWidth />
+                        <TextField inputProps={{
+                            style: {
+                                padding: 7
+                            }
+                        }} defaultValue='' value={dataEdit.lat} name="lat" style={{ margin: '5px 0px' }} fullWidth />
+                        <FormControl fullWidth sx={{ margin: '5px 0px' }}>
+                            <InputLabel id="demo-simple-select-label">Mã địa chỉ</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={dataEdit.categoryId}
+                                value={dataEdit.addressId}
+                                defaultValue={addressId}
                                 label="Mã địa chỉ"
-                                onChange={handleChangeCategory}
+                                MenuProps={MenuProps}
+                                onChange={handleChangeAddress}
                             >
-                                {dataCategory.map((item, index) => (
-                                    <MenuItem
-                                        key={index} value={item.id}>{item.name}</MenuItem>
+                                {dataAddress.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>{item.city} {item.street}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
-                        <TextField inputProps={{
-                            style: {
-                                padding: 5
-                            }
-                        }} value={dataEdit.description} onChange={onChangeText} name="description" style={{ margin: '5px' }} fullWidth label='Chú thích' />
-                        <TextField
-                            inputProps={{
-                                style: {
-                                    padding: 5
-                                }
-                            }} value={dataEdit.price} type="number" onChange={onChangeText} name="price" style={{ margin: '5px' }} fullWidth label='Giá' />
-                        <TextField
-                            inputProps={{
-                                style: {
-                                    padding: 5
-                                }
-                            }} value={dataEdit.name} onChange={onChangeText} name="name" style={{ margin: '5px' }} fullWidth label='Tên' />
-
-
-                        <img style={{ width: "20px" }} src={dataEdit.multipartFile} alt="" />
-
-                        <TextField
-                            inputProps={{
-                                style: {
-                                    padding: 5
-                                }
-                            }} onChange={onChangeImage} style={{ margin: '5px -5px 5px 5px' }} name="multipartFile" type="file" multiple accept="image*/*" />
+                        {addressPoint.map?.((item, index) => (
+                            <div key={index} style={{ display: 'flex', flexDirection: "column", margin: "10px" }} className="form-flex">
+                                <div>
+                                    {addressPoint.length - 1 > index ?
+                                        <div
+                                            onClick={() => {
+                                                onClickSelected(item.number, addressPoint[index + 1].number)
+                                            }
+                                            }
+                                            className={dataEdit.num1 === item.number ? "point selected" : "point"}
+                                        >
+                                            {item.name ? item.name + " " : ""} -
+                                            {addressPoint[index + 1].name ? " " + addressPoint[index + 1].name : ""}
+                                        </div> : null
+                                    }
+                                </div>
+                            </div>
+                        ))}
                     </div>
                     <div className="content-2">
                         <Map
@@ -307,7 +297,7 @@ export default function EditPillar({ item, dataAddress, openEdit, setOpenEdit, o
                             data={addressPoint}
                             productData={productData}
                             updatingProduct={item}
-                            updatingZoom={16}
+                            updatingZoom={12}
                             selected={selected}
                             setProduct={setClickedProduct}
                         />
@@ -318,8 +308,8 @@ export default function EditPillar({ item, dataAddress, openEdit, setOpenEdit, o
                     <Button sx={{ marginRight: "5px" }} onClick={handleClose} variant="contained" color="success">
                         Đóng
                     </Button>
-                    <Button onClick={onClickEdit} variant="contained" color="success">
-                        Sửa
+                    <Button disabled={isLoading} onClick={onClickEdit} variant="contained" color="success">
+                        {isLoading ? "Xin chờ..." : "Sửa"}
                     </Button>
                 </div>
             </Box>

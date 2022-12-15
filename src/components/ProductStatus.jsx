@@ -1,4 +1,5 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import TableCell from "@mui/material/TableCell";
 
 const ProductStatus = (params) => {
   const [data, setData] = useState("");
@@ -13,6 +14,7 @@ const ProductStatus = (params) => {
         break;
     }
   }
+
   useEffect(() => {
     setProductStatus(params.status)
   })

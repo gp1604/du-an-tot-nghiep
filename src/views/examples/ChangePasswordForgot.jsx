@@ -35,7 +35,12 @@ export default function ChangePasswordForgot() {
     const onForgetPassword = async (e) => {
         e.preventDefault();
         if (data.newPassword === '') {
-            toast.error('Password không được để trống', {
+            toast.error('Mật khẩu không được để trống', {
+                autoClose: 2000
+            })
+        }
+        else if (data.newPassword.length < 8) {
+            toast.error('Mật khẩu phải lớn hơn 8 kí tự', {
                 autoClose: 2000
             })
         }

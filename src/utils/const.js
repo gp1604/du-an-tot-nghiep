@@ -75,7 +75,7 @@ export const API_DELETE_CATEGORY = `${API}/admin/category/delete?id=`;
 
 export const API_CLICK_SEARCH_ADDRESS = `${API}/search?keyword=`;
 
-export const API_GET_ALL_ORDER = `${API}/user/orders`;
+export const API_GET_ALL_ORDER = `${API}/user/orders/`;
 
 export const API_ADD_CART_LOCAL = `${API}/cart/addalltocart`;
 
@@ -87,7 +87,7 @@ export const API_ORDER_RE_ORDER = `${API}/admin/order/extend_order`
 
 export const API_UPDATE_USER = `${API}/user/edit`
 
-export const API_GET_EXTEND_ORDER_USER = `${API}/user/orderdetail?status=extend`
+export const API_GET_EXTEND_ORDER_USER = `${API}/user/orderdetail?status=hiring`
 
 export const API_GET_EXPIRED_ORDER_USER = `${API}/user/orderdetail?status=expired`
 
@@ -135,9 +135,9 @@ export const API_WISHLIST_GET = `${API}/wishlist/get?productId=`
 
 export const API_WISHLIST_REMOVE = `${API}/wishlist/remove?productId=`
 
-export const API_OVERVIEW_MONTHLY_EARNING = `${API}/admin/overview/month_week_earning?number=10`
+export const API_OVERVIEW_MONTHLY_EARNING = `${API}/admin/overview/month_week_earning?number=8`
 
-export const API_OVERVIEW_MONTHLY_HIRED = `${API}/admin/overview/monthly_product_hired?number=50`
+export const API_OVERVIEW_MONTHLY_HIRED = `${API}/admin/overview/monthly_product_hired?number=8`
 
 export const API_OVERVIEW_TIME_PRODUCT_HIRED= `${API}/admin/overview/time_product_hired`
 
@@ -159,7 +159,7 @@ export const API_DELETE_ADDRESS_POINT = `${API}/addresspoint/address/delete/`
 
 export const API_UPDATE_ADDRESS_POINT = `${API}/addresspoint/address/update/`
 
-
+export const API_ADD_COMBO_TO_CART = `${API}/cart/addtocart_combo`
 
 
 

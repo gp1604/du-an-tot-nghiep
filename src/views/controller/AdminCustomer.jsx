@@ -7,37 +7,65 @@ import Customer from 'views/customer/Customer';
 import EditCustomer from 'views/customer/EditCustomer';
 
 export default function AdminCustomer() {
-
+  const [keyword, setKeyword] = useState('')
   const [data, setData] = useState([])
   const [totalPages, setTotalPages] = useState(0)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const [selected, setSelected] = useState(undefined)
   const [openEdit, setOpenEdit] = React.useState(false)
+  const [pageCRUD, setPageCRUD] = React.useState(1);
   const handleCloseEdit = () => setOpenEdit(false)
   useEffect(() => {
     fetchAPI()
   }, [])
 
   const handleChangePage = async (event, newPage) => {
-    const response = await axios.get(API_GET_USERS + (newPage + 1) + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + rowsPerPage)
-    if (response) {
-      setData(response.data.content)
-      setPage(newPage);
+    setPageCRUD(newPage + 1)
+    if (keyword == '') {
+      const response = await axios.get(API_GET_USERS + (newPage + 1) + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + rowsPerPage)
+      if (response) {
+        setData(response.data.content)
+        setPage(newPage);
+      }
+    } else {
+      const response = await axios.get(API_GET_USERS + (newPage + 1) + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + rowsPerPage + '&keyword=' + keyword)
+      if (response) {
+        setData(response.data.content)
+        setPage(newPage);
+      }
     }
   };
 
   const handleChangeRowsPerPage = async (event) => {
-    const response = await axios.get(API_GET_USERS + 1 + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + event.target.value)
-    if (response) {
-      setData(response.data.content)
-      setPage(0);
-      setRowsPerPage(+event.target.value);
+    setPageCRUD(1)
+    if (keyword == '') {
+      const response = await axios.get(API_GET_USERS + 1 + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + event.target.value)
+      if (response) {
+        setData(response.data.content)
+        setPage(0);
+        setRowsPerPage(+event.target.value);
+      }
+    } else {
+      const response = await axios.get(API_GET_USERS + 1 + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + event.target.value + '&keyword=' + keyword)
+      if (response) {
+        setData(response.data.content)
+        setPage(0);
+        setRowsPerPage(+event.target.value);
+      }
     }
   };
 
   const fetchAPI = async () => {
     const response = await axios.get(API_GET_USERS + page + 1 + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + rowsPerPage)
+    if (response) {
+      setData(response.data.content)
+      setTotalPages(response.data.totalElements)
+    }
+  }
+
+  const fetchAPIWhenCRUD = async () => {
+    const response = await axios.get(API_GET_USERS + pageCRUD + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + rowsPerPage)
     if (response) {
       setData(response.data.content)
       setTotalPages(response.data.totalElements)
@@ -53,50 +81,56 @@ export default function AdminCustomer() {
   // const [role, setRole] = useState('')
 
   const onSubmitEdit = async (data) => {
-    try {
-      const response = await axios.put(API_UPDATE_ROLE + data.id + "/update?roleName=" + data.roleName)
-      if (response && response.status === 200) {
-        toast.success("Sửa thành công", { autoClose: "1500" })
-        fetchAPI();
-        setOpenEdit(false)
+    let sub = data.roleName.substr(1, data.roleName.length)
+    let roleSub = sub.substring(0, sub.length - 1)
+    if (data.roleName === null) {
+      toast.error("Vai trò không được để trống", { autoClose: 1500 })
+    } else {
+      try {
+        const response = await axios.put(API_UPDATE_ROLE + data.id + "/update?roleName=" + roleSub)
+        if (response && response.status === 200) {
+          toast.success("Sửa thành công", { autoClose: "1500" })
+          fetchAPIWhenCRUD();
+          setOpenEdit(false)
 
-      } else if (response && response.status === 400) {
-        toast.error("Người dùng đã có vai trò này!", { autoClose: "1500" })
-      }
+        } else if (response && response.status === 400) {
+          toast.error("Người dùng đã có vai trò này!", { autoClose: "1500" })
+        }
 
-      //catch show error
-    } catch (error) {
-      console.log(error.response.data)
-      if (error.response.data.message) {
-        toast.error(`${error.response.data.message}`, {
-          autoClose: 2000
-        })
-      }
-      else if (error.response.data.error) {
-        toast.error(`${error.response.data.error}`, {
-          autoClose: 2000
-        })
-      }
-      else if (error.response.data.error && error.response.data.message) {
-        toast.error(`${error.response.data.message}`, {
-          autoClose: 2000
-        })
-      }
-      else {
-        toast.error('Error', {
-          autoClose: 2000
-        })
+        //catch show error
+      } catch (error) {
+        console.log(error.response.data)
+        if (error.response.data.message) {
+          toast.error(`${error.response.data.message}`, {
+            autoClose: 2000
+          })
+        }
+        else if (error.response.data.error) {
+          toast.error(`${error.response.data.error}`, {
+            autoClose: 2000
+          })
+        }
+        else if (error.response.data.error && error.response.data.message) {
+          toast.error(`${error.response.data.message}`, {
+            autoClose: 2000
+          })
+        }
+        else {
+          toast.error('Error', {
+            autoClose: 2000
+          })
+        }
       }
     }
 
   }
 
   const search = async (keyword) => {
+    setKeyword(keyword)
     const response = await axios.get(API_GET_USERS + page + 1 + "?sort=desc" + "&sortField=email" + "&usersPerPage=" + rowsPerPage + "&keyword=" + keyword)
     if (response) {
       setData(response.data.content)
       setTotalPages(response.data.totalElements)
-
     }
   }
   return (

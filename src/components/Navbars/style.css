@@ -1,3 +1,23 @@
+
+
+.main-content .navbar-top {
+    height: 80px;
+    left: 2%;
+    top: 20px;
+    width: 96%;
+    z-index: 20;
+    background-color: #103f97;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    position: relative !important;
+    border-radius: 15px;
+    margin-bottom: 12rem;
+}
+
+.navbar .container{
+    justify-content: end;
+}
+
 .menu-lv2-noti NotificationsNoneIcon {
     font-size: 30px;
 }
@@ -108,6 +128,16 @@
     -webkit-animation: spin-topbar 1s linear infinite;
     animation: spin-topbar 1s linear infinite;
 }
+
+.logo-home{
+    width: auto !important;
+    height: 81px !important;
+    background-color: white;
+}
+
+
+
+
 @-webkit-keyframes spin-topbar {
     0% {
         -webkit-transform: rotate(0deg);
@@ -196,4 +226,17 @@
     text-align: center;
     line-height: 15px;
     color: white;
+}
+
+.navbar-horizontal .navbar-brand {
+    /* font-size: 0.875rem; */
+    /* font-weight: 600; */
+    /* text-transform: uppercase; */
+    /* font-size: 0.875rem; */
+    /* letter-spacing: 0.05px; */
+    /* float: left !important; */
+    position: absolute;
+    /* border-radius: 16px; */
+    left: 0;
+    top: -1.5px;
 }

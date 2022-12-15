@@ -13,7 +13,7 @@ import {
     Col
 } from "reactstrap";
 import { NavLink, useHistory } from "react-router-dom";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import styled from "styled-components";
@@ -77,6 +77,9 @@ const ForgotPassword = () => {
     const styledBtn = styled.input`
     border:none;
     `
+    useEffect(() => {
+        document.title = 'ACN | Quên mật khẩu'
+    }, [])
     return (
         <>
             <Col lg="5" md="7">

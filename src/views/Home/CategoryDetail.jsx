@@ -303,7 +303,7 @@ function CategoryDetail() {
                                         Mô tả:    {dataCategory.description}
                                     </div>
 
-                                    <div class="line-loading"></div>
+                                    <div className="line-loading"></div>
                                 </div>
                             </div>
                         </div>

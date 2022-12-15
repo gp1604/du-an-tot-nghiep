@@ -152,11 +152,14 @@ function CartLocal() {
         listCartItems.splice(id, 1)
         localStorage.setItem("cartTemp", JSON.stringify(listCartItems))
         localStorage.setItem("cartADD", JSON.stringify(cartAddP))
+        localStorage.setItem('countCart', JSON.stringify(cartAddP.length));
+        setDataLocal(JSON.parse(localStorage.getItem("cartTemp")))
+        window.dispatchEvent(new Event("storage"));
         toast.success("Xoá thành công", { autoClose: 1500 })
     }
     return (
         <React.Fragment>
-            <section className="h-custom" style={{ backgroundColor: "white", height: '50vh', marginBottom: '80px' }}>
+            <section className="h-custom" style={{ backgroundColor: "white", height: '', marginBottom: '10px' }}>
                 <div style={{ backgroundColor: 'white' }}>
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col-12">
@@ -171,7 +174,7 @@ function CartLocal() {
                                                 <div className="d-flex justify-content-between align-items-center mb-5">
                                                     <h1 className="fw-bold mb-0 text-black">Thanh toán</h1>
                                                     {/* <ChatRoom/> */}
-                                                    <h6 className="mb-0 text-muted">{dataLocal.length} trụ</h6>
+                                                    <h6 className="mb-0 text-muted">Số lượng trụ: {dataLocal.length} </h6>
                                                 </div>
                                                 {dataLocal.length ?
                                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }} className="row mb-2 d-flex justify-content-between align-items-center">
@@ -268,20 +271,8 @@ function CartLocal() {
                                             </div>
                                         </div>
                                         <div className="col-lg-4 bg-grey">
-                                            <div style={{ marginTop: '50px' }} className="p-5">
-                                                {/* <h5 className="text-uppercase mb-3">Mã giảm giá</h5>
-                                                <div className="mb-5">
-                                                    <div className="form-outline">
-                                                        <input
-                                                            type="text"
-                                                            id="form3Examplea2"
-                                                            className="form-control form-control-lg"
-                                                        />
-                                                        <label className="form-label mt-2" htmlFor="form3Examplea2">
-                                                            Nhập mã của bạn
-                                                        </label>
-                                                    </div>
-                                                </div> */}
+                                            <div className="p-5">
+
                                                 <hr className="my-4" />
 
                                                 <div className="d-flex justify-content-between mb-5">

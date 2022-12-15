@@ -68,7 +68,7 @@ export default function AvailablePillar({ data, page, search, rowsPerPage, total
 
                     {/* <TextField sx={{ mt: "7px", width: "400px" }} id="outlined-basic" label="Search" variant="outlined" /> */}
                     {/* stickyHeader */}
-                    <TableContainer sx={{ height: '62vh' }}>
+                    <TableContainer sx={{ height: '67vh' }}>
                         <Table aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
@@ -100,15 +100,15 @@ export default function AvailablePillar({ data, page, search, rowsPerPage, total
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[6,10, 25, 100]}
+                    {/* <TablePagination
+                        rowsPerPageOptions={[]}
                         component="div"
                         count={totalPages}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    /> */}
                 </Paper>
             </Container>
         </>

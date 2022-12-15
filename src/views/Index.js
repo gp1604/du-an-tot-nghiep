@@ -227,7 +227,9 @@ const Index = (props) => {
       toast.warning('Vui lòng chọn thời gian bắt đầu ', { autoClose: 1200 })
     } else if (dateAPI2 == null) {
       toast.warning('Vui lòng chọn thời gian kết thúc ', { autoClose: 1200 })
-
+    }
+    else if (dateAPI1 > dateAPI2) {
+      toast.warning('Thời gian bắt đầu không được lớn hơn thời gian kết thúc ', { autoClose: 1200 })
     } else {
       if (keyword == null) {
         const response = await axios.get(API_OVERVIEW_TIME_PRODUCT_HIRED + '?dataPerPage=' + rowsPerPage + ' &date1='
@@ -249,11 +251,11 @@ const Index = (props) => {
     }
   }
 
-  const [sort, setSort] = useState('asc');
+  const [sort, setSort] = useState('desc');
   const onChangeButtonSort = async (e) => {
     if (selected === false) {
-      setSort('desc')
-    } else setSort('asc')
+      setSort('asc')
+    } else setSort('desc')
 
     if (dateAPI1 == null || dateAPI2 == null) {
       const response = await axios.get(API_OVERVIEW_TIME_PRODUCT_HIRED + '?dataPerPage=' + rowsPerPage + ' &date1='
@@ -284,20 +286,6 @@ const Index = (props) => {
     }
   }
 
-  // const onchangeSearch = async (e) => {
-  //   if (selected === false) {
-  //     setSort('desc')
-  //   } else setSort('asc')
-  //   const response = await axios.get(API_OVERVIEW_TIME_PRODUCT_HIRED + '?dataPerPage=' + rowsPerPage + ' &date1=' +
-  //     dateAPI1.replace(/-/g, '/') + '&date2=' + dateAPI2.replace(/-/g, '/') + '&page=' + page + 1 + '&sort=' + sort + '&keyword=' + keyword)
-  //   if (response) {
-  //     setDataTimeOverview(response.data.map)
-  //     setTotalHiring(response.data.totalHired)
-  //     setTotalPages(response.data.totalProduct)
-  //   }
-  // }
-
-
   const [selected, setSelected] = useState(false);
   const ToggleButton = styled(ToggleButtonMui)({
   });
@@ -324,7 +312,7 @@ const Index = (props) => {
   useEffect(() => {
     overview()
     const onchangeHired = async (e) => {
-      const response = await axios.get(API_OVERVIEW_MONTHLY_HIRED)
+      const response = await axios.get(API_OVERVIEW_MONTHLY_HIRED + '&sort=' + sort)
       if (response) {
         setDataOverviewOrderEachMonth(response.data)
       }
@@ -351,16 +339,10 @@ const Index = (props) => {
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-light ls-1 mb-1">
-                      Thu nhập 
+                      Thu nhập
                     </h6>
                     <h2 className="text-white mb-0">Thu nhập {new Date().getFullYear()}{" "}</h2>
                   </div>
-                  {/* <p className="mt-3">
-                    <NavLink>
-                      <span className="d-none d-md-block"> <input type="date" /></span>
-                    </NavLink>
-                  </p> */}
-                  {/* <span style={{color:'white', fontSize: '1.5em',fontWeight: '600'}}> -</span> */}
                   <p className="mt-3">
                     <NavLink>
                       <span className="d-none d-md-block">  </span>
@@ -410,19 +392,17 @@ const Index = (props) => {
             </Card>
           </Col>
           <Col xl="4">
-            <Card style={{height: '100%'}} className="shadow">
+            <Card style={{ height: '100%' }} className="shadow">
               <CardHeader className="bg-transparent">
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-muted ls-1 mb-1">
                       Số trụ được thuê hàng tháng
                     </h6>
-                    {/* <h2 className="mb-0">{new Date().getMonth()}{"/"}{new Date().getFullYear()}{" "}</h2> */}
                   </div>
                 </Row>
               </CardHeader>
               <CardBody>
-                {/* Chart */}
                 <div className="chart">
                   <Bar
                     data={{
@@ -453,14 +433,8 @@ const Index = (props) => {
                     <span className="mb-0 mr-3" style={{ color: 'black', fontWeight: '600' }}>đến</span>
                     <input style={{ padding: "5px 10px", borderRadius: "8px" }} className="mr-3" id='date2' onChange={e => setDateAPI2(e.target.value)} type="date" />
                     <input style={{ padding: "5px 10px", borderRadius: "8px" }} className="mr-3" placeholder='Tìm theo địa chỉ' onChange={e => setKeyword(e.target.value)} type="text" />
-                    <Button
-                      color="primary"
-                      onClick={submitDate}
-                      size="sm"
-                    >
-                      Tìm kiếm
-                    </Button>
-                    <FormControl sx={{ backgroundColor: 'white', height: '45px', borderRadius: '5px', marginLeft: '10px' }} size="small">
+
+                    <FormControl sx={{ backgroundColor: 'white', height: '45px', borderRadius: '5px' }} size="small">
                       <div style={{ display: 'flex', flexDirection: 'row' }}>
                         <ToggleButton
                           sx={{ height: '83%' }}
@@ -469,13 +443,20 @@ const Index = (props) => {
                           onChange={() => {
                             setSelected(!selected);
                             onChangeButtonSort()
-                            // onclickFilter()
                           }}
                         >
                           {selected ? <NorthIcon /> : <SouthIcon />}
                         </ToggleButton>
                       </div>
                     </FormControl>
+                    <Button
+                      color="primary"
+                      onClick={submitDate}
+                      size="s"
+                      style={{ marginLeft: '20px', padding: '10px 20px' }}
+                    >
+                      Tìm kiếm
+                    </Button>
                   </div>
 
                 </Row>
@@ -524,106 +505,6 @@ const Index = (props) => {
             </Card>
           </Col>
         </Row>
-        {/* <Row className="mt-5">
-          <Col className="mb-5 mb-xl-0" xl="8">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h3 className="mb-0">Page visits</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      See all
-                    </Button>
-                  </div>
-                </Row>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Page name</th>
-                    <th scope="col">Visitors</th>
-                    <th scope="col">Unique users</th>
-                    <th scope="col">Bounce rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">/argon/</th>
-                    <td>4,569</td>
-                    <td>340</td>
-                    <td>
-                      <i className="fas fa-arrow-up text-success mr-3" /> 46,53%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/index.html</th>
-                    <td>3,985</td>
-                    <td>319</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                      46,53%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/charts.html</th>
-                    <td>3,513</td>
-                    <td>294</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                      36,49%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/tables.html</th>
-                    <td>2,050</td>
-                    <td>147</td>
-                    <td>
-                      <i className="fas fa-arrow-up text-success mr-3" /> 50,87%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/profile.html</th>
-                    <td>1,795</td>
-                    <td>190</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-danger mr-3" />{" "}
-                      46,53%
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </Card>
-          </Col>
-          <Col xl="4">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h3 className="mb-0">Social traffic</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      See all
-                    </Button>
-                  </div>
-                </Row>
-              </CardHeader>
-
-            </Card>
-          </Col>
-        </Row> */}
       </Container>
     </>
   );

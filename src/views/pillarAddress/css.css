@@ -1,5 +1,6 @@
 .de {
-    width: 100%;
+    width: 80vw;
+    margin: auto;
 }
 .de .card {
     border: none;
@@ -104,5 +105,4 @@ label.radio input:checked + span {
         left: 100%;
     }
 }
-
 

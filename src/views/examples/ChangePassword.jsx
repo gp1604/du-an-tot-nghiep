@@ -36,6 +36,16 @@ export default function ChangePassword() {
     const ChangePassword = async (e) => {
         e.preventDefault()
         try {
+            if (data.password === '') {
+                toast.error('Vui lòng nhập mật khẩu', {
+                    autoClose: 2000
+                })
+            }
+            else if (data.newPassword.length < 8) {
+                toast.error('Mật khẩu phải lớn hơn 9 kí tự', {
+                    autoClose: 2000
+                })
+            }
             const response = await axios.get(API_CHANGE_PASSWORD + "?oldPassword=" + data.oldPassword + "&newPassword=" + data.newPassword, {
                 headers: {
                     'authorization': 'Bearer ' + token,

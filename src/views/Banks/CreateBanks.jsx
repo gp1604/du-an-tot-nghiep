@@ -16,11 +16,10 @@ export default function CreateBanks({ open, setOpen, onSubmitAdd }) {
     }
 
     const onClickAdd = () => {
-        onSubmitAdd(data)
+        onSubmitAdd(data, setData)
     }
 
     const handleClose = () => setOpen(false)
-    console.log(data);
     return (
         <div>
             <Modal
@@ -29,7 +28,7 @@ export default function CreateBanks({ open, setOpen, onSubmitAdd }) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box className='form-add-product'
+                <Box className='form-add-address'
                     sx={{
                         width: '40%',
                         position: 'relative',
@@ -43,12 +42,20 @@ export default function CreateBanks({ open, setOpen, onSubmitAdd }) {
                     <h2 style={{ textAlign: 'center' }}>Thêm thông tin tài khoản ngân hàng</h2>
                     <div style={{ display: 'flex', flexDirection: "column-reverse", margin: "10px" }} className="form-flex">
                         <TextField onChange={onChangeText} name="bankAccountName" style={{ margin: '5px' }} fullWidth label='Tên chủ tài khoản' />
-                        <TextField onChange={onChangeText} name="bankAccountNumber" style={{ margin: '5px' }} fullWidth label='Số tài khoản' />
+                        <TextField type={'number'} onChange={onChangeText} name="bankAccountNumber" style={{ margin: '5px' }} fullWidth label='Số tài khoản' />
                         <TextField onChange={onChangeText} name="bankCode" style={{ margin: '5px' }} fullWidth label='Mã ngân hàng' />
                         <TextField onChange={onChangeText} name="bankName" style={{ margin: '5px' }} fullWidth label='Tên ngân hàng' />
                     </div>
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                        <Button onClick={handleClose} sx={{ marginRight: "5px" }} variant="contained" color="success">
+                        <Button onClick={e => {
+                            handleClose()
+                            setData({
+                                bankAccountName: "",
+                                bankAccountNumber: "",
+                                bankCode: "",
+                                bankName: ""
+                            })
+                        }} sx={{ marginRight: "5px" }} variant="contained" color="success">
                             Đóng
                         </Button>
                         <Button onClick={onClickAdd} variant="contained" color="success">

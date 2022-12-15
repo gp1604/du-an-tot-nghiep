@@ -33,9 +33,22 @@ const Auth = (props) => {
     mainContent.current.scrollTop = 0;
   }, [location]);
 
+  let arrLocations = []
+  let ars = localStorage.getItem("locations")
+  if (ars != null) {
+    arrLocations = JSON.parse(ars)
+  }
+  arrLocations.push(window.location.pathname)
+  localStorage.setItem("locations", JSON.stringify(arrLocations))
+  // for (let i = 0; i < arrLocations.length; i++) {
+  //   if (arrLocations.length > 2) {
+  //     arrLocations.splice(i, arrLocations.length - 2)
+  //     localStorage.setItem("locations", JSON.stringify(arrLocations))
+
+  //   }
+  // }
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      console.log(window.location.pathname);
       if (prop.layout === "/auth") {
         return (
           <Route
@@ -49,6 +62,14 @@ const Auth = (props) => {
         history.block(true)
       }
       else if (decoded === undefined && !decoded && history.location.pathname === '/auth/activity') {
+        history.push('/auth/homePage')
+        history.block(true)
+      }
+      else if (decoded === undefined && !decoded && history.location.pathname === '/auth/changePassword') {
+        history.push('/auth/homePage')
+        history.block(true)
+      }
+      else if (decoded === undefined && !decoded && history.location.pathname === '/auth/wishList') {
         history.push('/auth/homePage')
         history.block(true)
       } else if (prop.layout === "") {
@@ -70,24 +91,7 @@ const Auth = (props) => {
     <>
       <div className="main-content" ref={mainContent}  >
         <AuthNavbar />
-        <div className="header py-7 py-lg-7 mt-4">
-          {/* bg-gradient-info */}
-          {/* <div className="separator separator-bottom separator-skew zindex-100">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              version="1.1"
-              viewBox="0 0 2560 100"
-              x="0"
-              y="0"
-            >
-              <polygon
-                className="fill-default"
-                points="2560 0 2560 100 0 100"
-              />
-            </svg>
-          </div> */}
-        </div>
+
 
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">

@@ -15,7 +15,7 @@ const AdminSize = (params) => {
     useEffect(() => {
         connect();
         getNotification();
-
+        console.log("data");
     }, []);
 
     const connect = () => {
@@ -39,7 +39,6 @@ const AdminSize = (params) => {
 
     const onMessageReceived = (data) => {
         getNotification();
-        toast.success(data, { autoClose: 2000 })
     }
 
     const onError = (err) => {

@@ -16,14 +16,16 @@ import axios from 'axios';
 import Moment from 'react-moment';
 import { Button, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-import './activity.css'
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import './wishlist.css'
 import { formatMoney } from 'common/formatMoney';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { showError } from 'utils/error';
 import { API_WISHLIST_GET } from 'utils/const';
 import { API_WISHLIST_REMOVE } from 'utils/const';
+import { API_ADD_CART } from 'utils/const';
+import { API_GET_CART } from 'utils/const';
 const columns = [
     { id: 'id', label: 'Ảnh', minWidth: 70, align: 'left' },
     {
@@ -36,7 +38,7 @@ const columns = [
     { id: 'a', label: 'Giá', minWidth: 100, align: 'center', },
     { id: 'Loại trụ', label: 'Loại trụ', minWidth: 100, align: 'center', },
     { id: 'Địa chỉ', label: 'Địa chỉ', minWidth: 170, align: 'center', },
-    { id: 'Địa chỉ', label: 'Tình trạng', minWidth: 100, align: 'center', },
+    { id: 'Địa chỉ2', label: 'Tình trạng', minWidth: 100, align: 'center', },
 
     { id: 's', label: 'Hành động', minWidth: 40, align: 'right', },
 ];
@@ -48,6 +50,7 @@ export default function WishList() {
     }
 
     useEffect(() => {
+        document.title = 'ACN | Danh sách theo dõi';
         getWishList()
     }, [])
 
@@ -74,17 +77,58 @@ export default function WishList() {
             }
         })
         if (response.status === 200) {
-            toast.success("Đã xoá khỏi danh sách yêu thích.", { autoClose: "1500" })
+            toast.success("Đã xoá khỏi danh sách yêu thích.", { autoClose: 1500 })
             getWishList()
         }
 
     }
-    console.log(data);
+
+    //addcart
+    const addCart = async (id) => {
+        console.log('id ', id);
+        try {
+            const response = await axios.post(API_ADD_CART, {
+                month: 1,
+                productId: id
+            }, {
+                headers: {
+                    'authorization': 'Bearer ' + localStorage.getItem('token'),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response && response.status === 201) {
+                toast.success('Đã thêm vào danh sách thanh toán', {
+                    autoClose: 1500
+                })
+                getWishList()
+                const responseCount = await axios.get(API_GET_CART, {
+                    headers: {
+                        'authorization': 'Bearer ' + localStorage.getItem('token'),
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                let arrayCart = []
+                Object.entries(responseCount.data).forEach(function (value, key) {
+                    Object.entries(value[1]).forEach(function (value, key) {
+                        arrayCart.push(value[1])
+                    })
+                })
+                localStorage.setItem('countCart', JSON.stringify(arrayCart.length));
+                window.dispatchEvent(new Event("storage"));
+                // history.push('/auth/cart')
+            };
+
+        } catch (error) {
+            showError(error)
+        }
+    }
     return (
         <div className='activity'>
             <div className='activity-content'>
                 <div className='activity-title'>
-                    Xin chào  {decoded.firstName + " " + decoded.lastName}
+                    Xin chào  {token && decoded ? decoded.firstName + " " + decoded.lastName : ''}
                 </div>
                 <div className="activity-decription">
                     Đây là trang sản phẩm yêu thích của bạn. Bạn có thể xem theo dõi thông tin các sản phẩm.
@@ -131,12 +175,24 @@ export default function WishList() {
                                                     <TableCell align="center">{formatMoney(item.price)}</TableCell>
                                                     <TableCell align="center">{item.category.name}</TableCell>
                                                     <TableCell align="center">{item.address.fullAddress}</TableCell>
-                                                    <TableCell align="center">{item.status}</TableCell>
+                                                    {item.status === 'AVAILABLE' ? <TableCell align="center" sx={{ color: 'green',fontWeight: '600' }}>Có sẵn</TableCell> : null}
+                                                    {item.status === 'HIRING' ? <TableCell align="center" sx={{ color: 'red',fontWeight: '600' }}>Đã cho thuê</TableCell> : null}
+                                                    {item.status !== 'HIRING' && item.status !== 'AVAILABLE' ? <TableCell align="center">{item.status}</TableCell> : null}
 
                                                     <TableCell align="right">
-                                                        <DeleteIcon sx={{ cursor: 'pointer' }}
-                                                            onClick={(e) => onHandleRemoveWishList(item.id)}
-                                                        />
+                                                        <div className='parent' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                            {item.status === 'AVAILABLE' ?
+                                                                <div className='myDIV'>
+                                                                    <AddShoppingCartIcon onClick={e => addCart(item.id)} sx={{ cursor: 'pointer', color: 'green' }} />
+                                                                </div> : <div className='mr-4'></div>}
+                                                            <div className="hide">Thêm vào thanh toán.</div>
+                                                            <div className='myDIVRmv'>
+                                                                <DeleteIcon sx={{ cursor: 'pointer', marginLeft: '15px' }}
+                                                                    onClick={(e) => onHandleRemoveWishList(item.id)}
+                                                                />
+                                                            </div>
+                                                            <div className="hideRmv">Xóa khỏi danh sách yêu thích.</div>
+                                                        </div>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}

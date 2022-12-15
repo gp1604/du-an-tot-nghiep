@@ -1,14 +1,13 @@
-
 .scrollbar {
     /* position: absolute; */
     /* background-color: #ffffff; */
     /* border-radius: 10px 0 0 10px; */
     float: left;
-    height: 230px;
+    height: 350px;
     width: 100%;
     overflow-y: scroll;
     /* border-bottom: 1px solid #ddd; */
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     /* opacity: 100px; */
 }
 
@@ -20,17 +19,93 @@
 }
 
 #style-1::-webkit-scrollbar-thumb {
-    height:70px;
+    height: 70px;
     width: 3px;
     background-color: #353a3f;
     border-radius: 10px;
     overflow-y: hidden;
 }
-.col-12{
+.col-12 {
     padding-right: 0 !important;
 }
 
-.row{
+.row {
     /* margin: auto; */
     margin-left: -15px;
+}
+
+.hide {
+    display: none;
+    width: 75%;
+}
+
+.myDIV:hover + .hide {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: red;
+}
+
+@media (min-width: 0px) and (max-width: 768px) {
+    .container-mobie {
+        width: 100% !important;
+    }
+    /* .row {
+        display: block;
+        width: 100%;
+        padding: 0;
+    } */
+    .card-body .row {
+    }
+    .h-custom {
+        height: auto !important;
+    }
+    .d-flex {
+        display: block;
+    }
+    .title-mobie {
+        width: auto !important;
+    }
+    .col-mobie {
+        padding: 0;
+        position: relative;
+        width: auto !important;
+    }
+    .img-mobie {
+        width: 100px;
+    }
+
+    /* .margin-right-mobie {
+        margin-right: -50px !important;
+    } */
+}
+
+
+@media (min-width: 768px) and (max-width: 1000px) {
+    .container-mobie {
+        width: 100% !important;
+    }
+    .card-body .row {
+    }
+    .h-custom {
+        height: auto !important;
+    }
+    .d-flex {
+        display: block;
+    }
+    .title-mobie {
+        width: auto !important;
+    }
+    .col-mobie {
+        padding: 0;
+        position: relative;
+        width: auto !important;
+    }
+    .img-mobie {
+        width: 100px;
+    }
+/* 
+    .margin-right-mobie {
+        margin-right: -50px !important;
+    } */
 }

@@ -86,13 +86,13 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                     <Grid container spacing={1}>
                         <Grid item xs={2} >
                             <Button onClick={handleOpen} sx={{ padding: "10px 5px", marginRight: '2%', height: '3.2em', width: "100%" }} variant="contained" color="success">
-                                Thêm tài khoản
+                                Thêm ngân hàng
                             </Button>
                             <Box onClick={handleOpen} sx={{ padding: "4px 5px", textAlign: "center", display: "block", backgroundColor: "#2e7d32", borderRadius: "8px", mr: "5px" }}>
                                 <AddIcon sx={{ color: "#FFFFFF", fontSize: "40px", width: "100%" }} />
                             </Box>
                         </Grid>
-                        <Grid item xs={10}>
+                        {/* <Grid item xs={10}>
                             <Paper sx={{ boxShadow: "none", border: "1px solid #ddd", display: 'flex', padding: '7px 7px 3px 7px', width: '100%', marginBottom: '20px', borderRadius: '7px' }}>
                                 <IconButton type="button" sx={{ p: '0px', }} aria-label="search">
                                     <SearchIcon />
@@ -102,7 +102,7 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                                     placeholder="Tìm kiếm loại trụ"
                                 />
                             </Paper>
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
                     {/* <TextField sx={{ mt: "7px", width: "400px" }} id="outlined-basic" label="Search" variant="outlined" /> */}
@@ -125,7 +125,7 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                             </TableHead>
                             <TableBody>
                                 {data
-                                    // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((item, index) => (
                                         <TableRow hover role="checkbox" key={index}>
                                             <TableCell>{item.id}</TableCell>
@@ -138,7 +138,6 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                                                 <UncontrolledDropdown>
                                                     <DropdownToggle
                                                         className="btn-icon-only text-light"
-                                                        href="#pablo"
                                                         role="button"
                                                         size="sm"
                                                         color=""
@@ -153,21 +152,18 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                                                             }}
                                                         >
                                                             <DeleteIcon></DeleteIcon>
-                                                            Delete
-
+                                                            Xóa
                                                         </DropdownItem>
                                                         <DropdownItem
                                                             onClick={(e) => onEdit(item)}
                                                         >
                                                             <EditIcon></EditIcon>
-                                                            Update
+                                                            Cập nhập
                                                         </DropdownItem>
                                                     </DropdownMenu>
                                                 </UncontrolledDropdown>
                                             </TableCell>
-
                                         </TableRow>
-
                                     ))}
                                 <Modal
                                     open={openDelete}
@@ -175,7 +171,7 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
-                                    <Box className='form-add-product'
+                                    <Box className='form-add-address'
                                         sx={{
                                             width: '40%',
                                             position: 'relative',
@@ -192,8 +188,8 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
                                         <div style={{ borderBottom: "1px solid #ddd", margin: "0px 10px" }} />
 
                                         <div style={{ display: "flex", justifyContent: "center", margin: "10px" }}>
-                                            <button onClick={handleCloseDelete} style={{ width: "110px" }} type="button" class="btn btn-primary">Huỷ</button>
-                                            <button onClick={(e) => onDelete(id)} style={{ width: "110px" }} type="button" class="btn btn-primary">Xác nhận</button>
+                                            <button onClick={handleCloseDelete} style={{ width: "110px" }} type="button" className="btn btn-primary">Huỷ</button>
+                                            <button onClick={(e) => onDelete(id)} style={{ width: "110px" }} type="button" className="btn btn-primary">Xác nhận</button>
                                         </div>
 
                                     </Box>

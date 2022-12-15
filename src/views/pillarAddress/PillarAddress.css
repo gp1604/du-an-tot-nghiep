@@ -3,6 +3,9 @@
         display: none;
     }
 
+    .MuiModal-root .form-add-address {
+        width: 80%;
+    }
     .MuiModal-root .form-add-product {
         width: 90%;
     }
@@ -11,6 +14,9 @@
 @media (min-width: 0px) and (max-width: 320px) {
     .header-custom-search .MuiButtonBase-root {
         display: none;
+    }
+    .MuiModal-root .form-add-address {
+        width: 90%;
     }
 }
 
@@ -24,8 +30,8 @@
     }
 
     .MuiModal-root .form-add-product {
-        width: 50%;
-        top: 33%;
+        width: 90%;
+        top: 50%;
     }
 }
 
@@ -39,8 +45,8 @@
     }
 
     .MuiModal-root .form-add-product {
-        width: 40%;
-        top: 25%;
+        width: 80%;
+        top: 50%;
     }
 }
 
@@ -55,7 +61,7 @@
 
     .MuiModal-root .form-add-product {
         width: 90%;
-        height: 90%;
+        /* height: 90%; */
     }
     .MuiModal-root .form-add-address {
         width: 30%;

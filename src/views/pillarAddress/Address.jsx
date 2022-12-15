@@ -67,8 +67,6 @@ const columns = [
 ];
 
 export default function Address({ handleOpenDelete, handleCloseDelete, openDelete, search, rowsPerPage, data, onDelete, onEdit, open, setOpen, totalPages, handleChangePage, handleChangeRowsPerPage, page }) {
-
-    const [detailData, setDetailData] = useState([]);
     const [openDetailData, setOpenDetailData] = useState(false);
     const closeDetailData = () => setOpenDetailData(false);
     const style = {
@@ -147,7 +145,7 @@ export default function Address({ handleOpenDelete, handleCloseDelete, openDelet
                                     // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((item, index) => (
                                         <TableRow hover role="checkbox" key={index}>
-                                            <TableCell sx={{ textAlign: 'left', color: 'green', cursor: 'pointer' }}>
+                                             <TableCell sx={{ textAlign: 'left', color: 'green', cursor: 'pointer' }}>
                                                 <AddLocationAltIcon onClick={() => openDetailPoint(item.id)}>
                                                 </AddLocationAltIcon>
                                             </TableCell>
@@ -202,7 +200,7 @@ export default function Address({ handleOpenDelete, handleCloseDelete, openDelet
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
-                                    <Box className='form-add-product'
+                                    <Box className='form-add-address'
                                         sx={{
                                             width: '40%',
                                             position: 'relative',
@@ -220,8 +218,8 @@ export default function Address({ handleOpenDelete, handleCloseDelete, openDelet
                                         <div style={{ borderBottom: "1px solid #ddd", margin: "0px 10px" }} />
 
                                         <div style={{ display: "flex", justifyContent: "center", margin: "10px" }}>
-                                            <button onClick={handleCloseDelete} style={{ width: "110px" }} type="button" class="btn btn-primary">Huỷ</button>
-                                            <button onClick={(e) => onDelete(id)} style={{ width: "110px" }} type="button" class="btn btn-primary">Xác nhận</button>
+                                            <button onClick={handleCloseDelete} style={{ width: "110px" }} type="button" className="btn btn-primary">Huỷ</button>
+                                            <button onClick={(e) => onDelete(id)} style={{ width: "110px" }} type="button" className="btn btn-primary">Xác nhận</button>
                                         </div>
 
                                     </Box>
