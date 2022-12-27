@@ -25,10 +25,12 @@ export default function AdminCategory() {
 
     const [openEdit, setOpenEdit] = React.useState(false)
     const handleCloseEdit = () => setOpenEdit(false)
-
+    const [isLoading, setIsLoading] = useState(false)
+    const [showLoading, setShowLoading] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
     const handleOpenDelete = () => setOpenDelete(true);
     const handleCloseDelete = () => setOpenDelete(false);
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         fetchAPI()
     }, [])
@@ -83,11 +85,13 @@ export default function AdminCategory() {
                 toast.warning("Mô tả không được để trống", { autoClose: 1500 });
 
             } else {
+                setIsLoading(true)
                 const response = await axios.post(API_ADD_CATEGORY, data)
                 if (response && response.status === 201) {
                     toast.success("Thêm thành công", { autoClose: 1500 })
                     setOpen(false)
-                    fetchAPI()
+                    setIsLoading(false)
+                    fetchAPIWhenCRUD()
                     setData({
                         name: "",
                         description: ""
@@ -95,6 +99,7 @@ export default function AdminCategory() {
                 }
             }
         } catch (error) {
+            setIsLoading(false)
             showError(error)
         }
     }
@@ -108,27 +113,40 @@ export default function AdminCategory() {
                 toast.warning("Mô tả không được để trống", { autoClose: 1500 });
 
             } else {
+                setIsLoading(true)
                 const response = await axios.put(API_EDIT_CATEGORY, data)
                 if (response && response.status === 201) {
                     toast.success("Sửa thành công", { autoClose: 1500 })
                     fetchAPIWhenCRUD();
                     setOpenEdit(false)
+                    setIsLoading(false)
                 }
             }
             //catch show error
         } catch (error) {
+            setIsLoading(false)
             showError(error)
         }
     }
 
     const onDelete = async (id) => {
-        const response = await axios.delete(API_DELETE_CATEGORY + id)
-        if (response && response.status === 201) {
-            toast.success("Xoá thành công", { autoClose: 1500 })
-            setOpenDelete(false)
-            fetchAPIWhenCRUD()
+        setLoading(true)
+        setIsLoading(true)
+        try {
+            const response = await axios.delete(API_DELETE_CATEGORY + id)
+            if (response && response.status === 201) {
+                toast.success("Xoá thành công", { autoClose: 1500 })
+                setOpenDelete(false)
+                fetchAPIWhenCRUD()
+                setIsLoading(false)
+                setLoading(false)
+            }
+        } catch (e) {
+            setIsLoading(false)
+            setLoading(false)
         }
     }
+
     const search = async (keyword) => {
         // const response = await axios.get(API_GET_CATEGORY_PAGE + page + 1 + "?dataPerPage=" + rowsPerPage + "&sort=desc" + "&sortField=id&keyword=" + keyword)
         // if (response) {
@@ -138,9 +156,9 @@ export default function AdminCategory() {
     }
     return (
         <div>
-            {selected && <EditCategory item={selected} openEdit={openEdit} setOpenEdit={setOpenEdit} onSubmitEdit={onSubmitEdit} />}
-            <CreateCategory open={open} setOpen={setOpen} onSubmitAdd={onSubmitAdd} />
-            <Category totalPages={totalPages} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} page={page} rowsPerPage={rowsPerPage} data={data} search={search} setOpen={setOpen} onEdit={onEdit} onDelete={onDelete}
+            {selected && <EditCategory isLoading={isLoading} item={selected} openEdit={openEdit} setOpenEdit={setOpenEdit} onSubmitEdit={onSubmitEdit} />}
+            <CreateCategory isLoading={isLoading} open={open} setOpen={setOpen} onSubmitAdd={onSubmitAdd} />
+            <Category loading={loading} showLoading={showLoading} isLoading={isLoading} totalPages={totalPages} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} page={page} rowsPerPage={rowsPerPage} data={data} search={search} setOpen={setOpen} onEdit={onEdit} onDelete={onDelete}
                 openDelete={openDelete} handleCloseDelete={handleCloseDelete} handleOpenDelete={handleOpenDelete} />
         </div>
     )

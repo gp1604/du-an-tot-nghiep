@@ -65,6 +65,7 @@
     "react-google-maps": "^9.4.5",
     "react-icons": "^4.4.0",
     "react-jwt": "^1.1.7",
+    "react-loading": "^2.0.3",
     "react-moment": "^1.1.2",
     "react-phone-number-input": "^3.2.11",
     "react-router-dom": "^5.2.0",

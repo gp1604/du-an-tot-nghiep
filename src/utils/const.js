@@ -1,5 +1,5 @@
 export const API = 'http://localhost:8082';
-// export const API = 'http://chothuecot-dev.ap-southeast-1.elasticbeanstalk.com';
+// export const API = 'https://thuetru.herokuapp.com';
 
 export const API_SIGNUP = `${API}/signup`;
 
@@ -139,7 +139,7 @@ export const API_OVERVIEW_MONTHLY_EARNING = `${API}/admin/overview/month_week_ea
 
 export const API_OVERVIEW_MONTHLY_HIRED = `${API}/admin/overview/monthly_product_hired?number=8`
 
-export const API_OVERVIEW_TIME_PRODUCT_HIRED= `${API}/admin/overview/time_product_hired`
+export const API_OVERVIEW_TIME_PRODUCT_HIRED = `${API}/admin/overview/time_product_hired`
 
 export const API_RESET_PASSWORD = `${API}/reset_password`
 

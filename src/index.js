@@ -12,6 +12,7 @@ import AuthLayout from "layouts/Auth.js";
 import AuthVerifyComponent from './AuthVerifyComponent '
 import { toast, ToastContainer } from "react-toastify";
 import jwt_decode from "jwt-decode";
+import Loading from "lib/Loading";
 
 
 // let token = localStorage.getItem('token')
@@ -32,6 +33,7 @@ import jwt_decode from "jwt-decode";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.Fragment>
+    {/* <Loading/> */}
     <ToastContainer
       position="bottom-right"
       autoClose={5000}

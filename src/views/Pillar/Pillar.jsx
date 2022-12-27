@@ -29,6 +29,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import TabList from "@mui/lab/TabList";
 import Typography from "@mui/material/Typography";
 import Map from "./MapPillar";
+import ReactLoading from 'react-loading';
+
 const columns = [
     { id: 'id', label: 'Id', minWidth: 10, maxWidth: 10 },
     {
@@ -86,7 +88,7 @@ const columns = [
     },
 ];
 
-export default function Pillar({ handleOpenDelete, openDelete, search, handleCloseDelete, handleChangeRowsPerPage, totalPages, data, setOpen, onDelete, onEdit, page, rowsPerPage, handleChangePage }) {
+export default function Pillar({ loading, handleOpenDelete, openDelete, search, handleCloseDelete, handleChangeRowsPerPage, totalPages, data, setOpen, onDelete, onEdit, page, rowsPerPage, handleChangePage }) {
     const [id, setId] = useState(Number)
 
     const handleOpen = () => setOpen(true)
@@ -100,6 +102,26 @@ export default function Pillar({ handleOpenDelete, openDelete, search, handleClo
     };
     return (
         <>
+            <Modal
+                open={loading}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100vh",
+                        // borderRadius: "10px"
+                    }}
+                >
+                    <ReactLoading type="spin" color="#ffffff" height={"3%"} width={"3%"} />
+                </Box>
+
+            </Modal>
             <Container fluid style={{ height: "200px" }} className="header bg-gradient-info pb-8 pt-5 pt-md-8 ">
                 <Paper sx={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
 

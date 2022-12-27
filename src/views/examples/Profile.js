@@ -212,11 +212,11 @@ const Profile = () => {
                     </div> */}
                   </div>
                 </Row>
-                <div className="text-center">
+                <div className="text-center" style={{marginTop:"50px"}}>
                   <h3>
                     {data.firstName} {data.lastName}
                   </h3>
-                  <div>
+                  <div style={{marginTop:"10px"}}>
                     <Button color="info">
                       <NavLink className="nav-link-icon" to="/auth/changePassword" tag={Link}>
                         <span style={{ color: "#ffffff" }} className="">Đổi mật khẩu</span>

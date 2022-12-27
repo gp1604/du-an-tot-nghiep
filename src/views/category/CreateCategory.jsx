@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-export default function CreateCategory({ open, setOpen, onSubmitAdd }) {
+export default function CreateCategory({ open, setOpen, onSubmitAdd, isLoading }) {
     const [data, setData] = useState({
         name: "",
         description: ""
@@ -38,9 +38,9 @@ export default function CreateCategory({ open, setOpen, onSubmitAdd }) {
                         left: "50%"
                     }}
                 >
-                    <h2 style={{ textAlign: 'center' }}>Thêm danh mục</h2>
+                    <h2 style={{ textAlign: 'center' }}>Thêm Loại Trụ</h2>
                     <div style={{ display: 'flex', flexDirection: "column", margin: "10px" }} className="form-flex">
-                        <TextField onChange={onChangeText} defaultValue='' name="name" style={{ margin: '5px' }} fullWidth label='Tên danh mục' />
+                        <TextField onChange={onChangeText} defaultValue='' name="name" style={{ margin: '5px' }} fullWidth label='Tên loại trụ' />
                         <TextField onChange={onChangeText} defaultValue='' name="description" style={{ margin: '5px' }} fullWidth label='Chú thích' />
                     </div>
                     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -53,8 +53,8 @@ export default function CreateCategory({ open, setOpen, onSubmitAdd }) {
                         }} sx={{ marginRight: "5px" }} variant="contained" color="success">
                             Đóng
                         </Button>
-                        <Button onClick={onClickAdd} variant="contained" color="success">
-                            Thêm
+                        <Button disabled={isLoading} onClick={onClickAdd} variant="contained" color="success">
+                            {isLoading ? "Xin chờ ..." : "Xác nhận"}
                         </Button>
                     </div>
 

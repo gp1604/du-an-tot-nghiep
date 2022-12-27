@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubmitEdit }) {
+export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubmitEdit, isLoading }) {
 
     const { active, image } = item
     // const [selectedImage, setSelectedImage] = useState(null);
@@ -103,8 +103,8 @@ export default function EditPictures({ item, data, openEdit, setOpenEdit, onSubm
                     <Button sx={{ marginRight: "5px" }} onClick={handleClose} variant="contained" color="success">
                         Đóng
                     </Button>
-                    <Button onClick={onClickEdit} variant="contained" color="success">
-                        Sửa
+                    <Button disabled={isLoading} onClick={onClickEdit} variant="contained" color="success">
+                        {isLoading ? "Xin chờ ..." : "Xác nhận"}
                     </Button>
                 </div>
 

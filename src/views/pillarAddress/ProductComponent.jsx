@@ -14,15 +14,16 @@ import Moment from "react-moment";
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
 import './ProductComponent.css'
-import { API_WISHLIST_ADD } from "utils/const";
 import usePagination from "./Pagination";
 import './css.css'
 import { ThemeProvider } from "styled-components";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { API_WISHLIST_REMOVE } from "utils/const";
-import { API_WISHLIST_GET } from "utils/const";
-import { API_CART_REMOVE } from "utils/const";
-function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) {
+
+import ReactLoading from 'react-loading';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+
+function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem, loading, onHandleRemoveWishList, onClickAddWishList, data }) {
 
   const renderer = ({ hours, minutes, completed }) => {
     if (completed) {
@@ -100,60 +101,6 @@ function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) 
     }
   }
 
-  let user = localStorage.getItem('user')
-
-  const onClickAddWishList = async (id) => {
-    if (!token && !user) {
-      history.push('/auth/login')
-      toast.warning("Vui lòng đăng nhập!")
-    } else {
-      const response = await axios.post(API_WISHLIST_ADD + id, {}, {
-        headers: {
-          'authorization': 'Bearer ' + token,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-      if (response.status === 200) {
-        getWishList()
-        toast.success("Đã thêm vào danh sách yêu thích.", { autoClose: 1500 })
-      }
-    }
-
-  }
-
-  const onHandleRemoveWishList = async (id) => {
-    const response = await axios.post(API_WISHLIST_REMOVE + id, {}, {
-      headers: {
-        'authorization': 'Bearer ' + token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    if (response.status === 200) {
-      getWishList()
-      toast.success("Đã xoá khỏi danh sách yêu thích.", { autoClose: "1500" })
-    }
-
-  }
-
-  useEffect(() => {
-    getWishList()
-  }, [])
-  const [data, setData] = useState([])
-  const getWishList = async (id) => {
-    const response = await axios.get(API_WISHLIST_GET + 0, {
-      headers: {
-        'authorization': 'Bearer ' + token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    if (response.status === 200) {
-      setData(response.data)
-    }
-  }
-
   let [page, setPage] = useState(1);
   const PER_PAGE = 8;
 
@@ -190,6 +137,26 @@ function ProductComponent({ product, onClickRemoveItemCart, addCart, setItem }) 
   }
   return (
     <React.Fragment>
+      <Modal
+        open={loading}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            alignContent: "center",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100vh",
+            // borderRadius: "10px"
+          }}
+        >
+          <ReactLoading type="spin" color="#ffffff" height={"3%"} width={"3%"} />
+        </Box>
+
+      </Modal>
       <ThemeProvider theme={theme}>
         {/* <Stack sx={{ mt: 8 }} alignItems="center">
           <Pagination

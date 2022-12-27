@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function EditCustomer({ item, openEdit, setOpenEdit, handleCloseEdit, onSubmitEdit }) {
+export default function EditCustomer({ item, openEdit, setOpenEdit, handleCloseEdit, onSubmitEdit, isLoading }) {
   const listRoles = [
     {
       value: "[ROLE_USER]",
@@ -90,8 +90,8 @@ export default function EditCustomer({ item, openEdit, setOpenEdit, handleCloseE
             <Button sx={{ marginRight: "5px" }} onClick={handleCloseEdit} variant="contained" color="success">
               Đóng
             </Button>
-            <Button onClick={onClickEdit} variant="contained" color="success">
-              Xác nhận
+            <Button disabled={isLoading} onClick={onClickEdit} variant="contained" color="success">
+              {isLoading ? "Xin chờ ..." : "Xác nhận"}
             </Button>
           </div>
         </Box>

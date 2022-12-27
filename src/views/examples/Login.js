@@ -25,6 +25,7 @@ import './login.css'
 import { API_ADD_CART_LOCAL } from "utils/const";
 import { API_GET_CART } from "utils/const";
 import { forEach } from "lodash";
+import { showError } from "utils/error";
 
 const Login = () => {
   const history = useHistory();
@@ -37,9 +38,9 @@ const Login = () => {
   if (token !== null) {
     decoded = jwt_decode(token);
   }
-
+  const [isLoading, setIsLoading] = useState(false);
   let arrLocations = JSON.parse(localStorage.getItem("locations"));
-  console.log("arrLocations", arrLocations);
+
   const onLogin = async (e) => {
     e.preventDefault();
     if (data.phoneNumber === '') {
@@ -51,12 +52,8 @@ const Login = () => {
         autoClose: 2000
       })
     }
-    else if (data.password.length < 8) {
-      toast.error('Mật khẩu phải lớn hơn 8 kí tự', {
-        autoClose: 2000
-      })
-    }
     else {
+      setIsLoading(true)
       try {
         const response = await axios.post(API_SIGNIN, data);
         if (response && response.status === 200) {
@@ -65,8 +62,21 @@ const Login = () => {
           toast.success('Đăng nhập thành công', {
             autoClose: 1500
           })
+          setIsLoading(false)
+          //check role user
           if (jwt_decode(response?.data.token).roles === `[ROLE_USER]`) {
-            //check role user
+            // redirect
+            for (let i = arrLocations.length - 2; i < arrLocations.length; i--) {
+              console.log(arrLocations[i]);
+              if (arrLocations[i] === "/auth/register" || arrLocations[i] === "/auth/login") {
+                history.replace({ pathname: '/auth/homePage' })
+                break
+              } else if (arrLocations[i] !== "/auth/register" || arrLocations[i] !== "/auth/login") {
+                history.replace({ pathname: arrLocations[i] })
+                break
+              }
+              // history.replace({ pathname: arrLocations[i] === "auth/register" ? arrLocations[i] : '/auth/homePage' })
+            }
             if (localStorage.getItem('countCart') == null) {
               const response2 = await axios.get(API_GET_CART, {
                 headers: {
@@ -79,18 +89,6 @@ const Login = () => {
                 localStorage.setItem('countCart', JSON.stringify(response2.data.length));
                 window.dispatchEvent(new Event("storage"));
               }
-            }
-
-            for (let i = arrLocations.length - 2; i < arrLocations.length; i--) {
-              console.log(arrLocations[i]);
-              if (arrLocations[i] === "/auth/register" || arrLocations[i] === "/auth/login") {
-                history.replace({ pathname: '/auth/homePage' })
-                break
-              } else if (arrLocations[i] !== "/auth/register" || arrLocations[i] !== "/auth/login") {
-                history.replace({ pathname: arrLocations[i] })
-                break
-              }
-              // history.replace({ pathname: arrLocations[i] === "auth/register" ? arrLocations[i] : '/auth/homePage' })
             }
 
             //add cart local to database
@@ -140,31 +138,11 @@ const Login = () => {
 
         };
       } catch (error) {
-        console.log(error.response.data)
-        if (error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error) {
-          toast.error(`${error.response.data.error}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error && error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else {
-          toast.error('Error', {
-            autoClose: 2000
-          })
-        }
+        setIsLoading(false)
+        showError(error)
       }
     }
   }
-
   const styledBtn = styled.input`
   border:none;
   `
@@ -280,8 +258,8 @@ const Login = () => {
                 </label>
               </div> */}
               <div className="text-center">
-                <Button style={{ width: "100%" }} className="my-4" color="primary" type="submit" onClick={(e) => onLogin(e)}>
-                  Đăng nhập
+                <Button disabled={isLoading} style={{ width: "100%" }} className="my-4" color="primary" type="submit" onClick={(e) => onLogin(e)}>
+                  {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                 </Button>
               </div>
             </Form>

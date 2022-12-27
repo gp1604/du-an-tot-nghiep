@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useEffect } from 'react';
-export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item }) {
+export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item, isLoading }) {
     const { bankName, bankCode, bankAccountNumber, bankAccountName } = item
 
     const [data, setData] = useState({
@@ -29,7 +29,6 @@ export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item })
             bankName: item.bankName || "",
         })
     }, [item])
-    console.log('d', data);
     const handleClose = () => setOpenEdit(false)
     return (
         <div>
@@ -61,8 +60,8 @@ export default function EditBanks({ openEdit, setOpenEdit, onHandleEdit, item })
                         <Button onClick={handleClose} sx={{ marginRight: "5px" }} variant="contained" color="success">
                             Đóng
                         </Button>
-                        <Button onClick={onClickUpdate} variant="contained" color="success">
-                            Sửa
+                        <Button disabled={isLoading} onClick={onClickUpdate} variant="contained" color="success">
+                            {isLoading ? "Xin chờ ..." : "Xác nhận"}
                         </Button>
                     </div>
 

@@ -12,6 +12,9 @@ import CartLocal from './CartLocal'
 import { API_START_COOL_DOWN } from 'utils/const'
 import { API_UPDATE_MONTH_CART } from './../../utils/const';
 import { showError } from 'utils/error'
+import ReactLoading from 'react-loading';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 function CartDatabase() {
 
@@ -26,6 +29,7 @@ function CartDatabase() {
     }
 
     const getAllCart = async (e) => {
+        setLoading(true);
         const response = await axios.get(API_GET_CART, {
             headers: {
                 'authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -34,6 +38,8 @@ function CartDatabase() {
             }
         })
         if (response) {
+            setLoading(false)
+
             setData(response.data)
         }
     }
@@ -41,6 +47,7 @@ function CartDatabase() {
 
 
     const handleUpdateMonth = async (item) => {
+        setLoading(true)
         const response = await axios.put(API_UPDATE_MONTH_CART + item.product.id + "?day=" + (item.month + 1), {}, {
             headers: {
                 'authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -48,12 +55,17 @@ function CartDatabase() {
                 'Content-Type': 'application/json'
             }
         })
+        if (response.status === 200) {
+            setLoading(false)
+        }
         setShowDate(new Date(showDate.setMonth(showDate.getMonth() + 1)))
         getAllCart()
     }
 
     const handleMonth = async (item) => {
         if (item.month > 1) {
+            setLoading(true)
+
             const response = await axios.put(API_UPDATE_MONTH_CART + item.product.id + "?day=" + (item.month - 1), {}, {
                 headers: {
                     'authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -61,10 +73,14 @@ function CartDatabase() {
                     'Content-Type': 'application/json'
                 }
             })
-            setShowDate(new Date(showDate.setMonth(showDate.getMonth() - 1)))
+            if (response.status === 200) {
+                setLoading(false)
+            }
             getAllCart()
+            setShowDate(new Date(showDate.setMonth(showDate.getMonth() - 1)))
         }
     }
+    const [loading, setLoading] = useState(false)
 
     const showDate2 = (d1, d2) => {
         let date = new Date();
@@ -77,28 +93,40 @@ function CartDatabase() {
     // const [idOrder, setIdOrder] = useState()
     const clickOrder = async () => {
         // setBtnOrders('Vui lòng chờ...')
-        // setBtnDisabled(true)
+        setBtnDisabled(true)
         try {
             if (token) {
-                const response = await axios.post(API_PLACE_ORDER, {}, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const response = await
+                    toast.promise(
+                        axios.post(API_PLACE_ORDER, {}, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        }),
+                        {
+                            pending: 'Hệ thống đang xử lý ...',
+                            success: 'Đặt trụ thành công ',
+                        },
+                        { autoClose: 2000 },
+                        {
+                            style: {
+                                boxShadow: '5px 5px 20px 5px #black',
+                                border: '1px solid black'
+                            },
+                        }
+                    );
+
                 if (response && response.status === 200) {
-                    toast.success('Đặt trụ thành công', {
-                        autoClose: 1500
-                    })
+                    // toast.success('Đặt trụ thành công', {
+                    //     autoClose: 1500
+                    // })
                     localStorage.setItem('countCart', JSON.stringify(0));
                     window.dispatchEvent(new Event("storage"));
                     const responseCoolDown = await axios.get(API_START_COOL_DOWN + response.data.message.replace(/\D/g, ""))
-                    setTimeout(() => {
-                        history.push('/auth/order/' + response.data.message.replace(/\D/g, ""))
-                    }, 2000);
-
-                    setBtnDisabled(true);
+                    history.push('/auth/order/' + response.data.message.replace(/\D/g, ""))
+                    setBtnDisabled(false);
                 };
                 // setBtnOrders('Vui lòng chờ...')
             } else {
@@ -108,27 +136,8 @@ function CartDatabase() {
                 history.push('/auth/login')
             }
         } catch (error) {
-            console.log(error.response.data)
-            if (error.response.data.message) {
-                toast.error(`${error.response.data.message}`, {
-                    autoClose: 2000
-                })
-            }
-            else if (error.response.data.error) {
-                toast.error(`${error.response.data.error}`, {
-                    autoClose: 2000
-                })
-            }
-            else if (error.response.data.error && error.response.data.message) {
-                toast.error(`${error.response.data.message}`, {
-                    autoClose: 2000
-                })
-            }
-            else {
-                toast.error('Error', {
-                    autoClose: 2000
-                })
-            }
+            setBtnDisabled(false);
+            showError(error)
         }
     }
 
@@ -150,6 +159,7 @@ function CartDatabase() {
         getAllCart()
     }, [])
     const onClickRemoveItemCart = async (id) => {
+        setLoading(true)
         try {
             console.log('id cart', id);
             const response = await axios.put(API_CART_REMOVE + id, {}, {
@@ -169,6 +179,7 @@ function CartDatabase() {
                         'Content-Type': 'application/json'
                     }
                 })
+                setLoading(false)
                 let arrayCart = []
                 Object.entries(responseCount.data).forEach(function (value, key) {
                     Object.entries(value[1]).forEach(function (value, key) {
@@ -180,13 +191,34 @@ function CartDatabase() {
             }
         } catch (error) {
             showError(error)
+            setLoading(false)
         }
     }
 
     function renderMap(key) {
         return (
             <>
-                {JSON.parse(key[0]).length >= 2 ? <div>Đường: {JSON.parse(key[0])[0].addressName} - từ {JSON.parse(key[0])[0].name} đến {JSON.parse(key[0])[0].name}</div> :
+                <Modal
+                    open={loading}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "100%",
+                            height: "100vh",
+                            // borderRadius: "10px"
+                        }}
+                    >
+                        <ReactLoading type="spin" color="#ffffff" height={"3%"} width={"3%"} />
+                    </Box>
+
+                </Modal>
+                {JSON.parse(key[0]).length >= 2 ? <div>Đường: {JSON.parse(key[0])[0].addressName} - từ {JSON.parse(key[0])[0].name} đến {JSON.parse(key[0])[1].name}</div> :
                     <div>Đường: {JSON.parse(key[0])[0].addressName}</div>}
                 {key[1].map((item) =>
                     <div>
@@ -225,11 +257,11 @@ function CartDatabase() {
                                     <i className="fas fa-plus" />
                                 </button>
                             </div>
-                            <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3">
+                            <div style={{ display: "flex", justifyContent: "center", }} className="col-md-3 col-lg-3 col-xl-3 cus-text-spgp">
                                 {/* <h6 className="text-muted">Price</h6> */}
-                                <h6 className="text-black mb-0">{formatMoney(item.product.price * item.month)}</h6>
+                                <h6 style={{ fontSize: "14px" }} className="text-black mb-0">{formatMoney(item.product.price * item.month)}</h6>
                             </div>
-                            <div className="col-md-1 col-lg-1 col-xl-1 text-end">
+                            <div className="col-md-1 col-lg-1 col-xl-1 text-end cus-text-spgp">
                                 <div style={{ cursor: 'pointer' }} className="text-muted">
                                     <i onClick={() => onClickRemoveItemCart(item.product.id)} className="fas fa-times" />
                                 </div>
@@ -239,9 +271,11 @@ function CartDatabase() {
                                     {/* hide this div */}
                                 </div>
                             </div>
-                            <h6 style={{ fontSize: '0.8em' }} className="text-muted mt-2">Ngày bắt đầu:
-                                <span className="text-nowrap mr-3"> {new Date().getDate()}{"/"}{new Date().getMonth() + 1}{"/"}{new Date().getFullYear()}</span>
-                                - <span className='ml-2'>{showDate2(0, item.month)}</span></h6>
+                            <div style={{ padding: "" }} className="date-cus-sps">Ngày bắt đầu:
+                                <span> {new Date().getDate()}{"/"}{new Date().getMonth() + 1}{"/"}{new Date().getFullYear()}
+                                     <span> - </span> {showDate2(0, item.month)}
+                                </span>
+                            </div>
 
                         </div>
                     </div>
@@ -268,34 +302,30 @@ function CartDatabase() {
                                                 <h1 className="fw-bold mb-0 text-black">Thanh toán</h1>
                                                 <h6 className="mb-0 text-muted" style={{ fontWeight: 'bold' }}>Số lượng trụ: {arrayCart.length} </h6>
                                             </div>
-                                            {
-                                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }} className=" row mb-2 d-flex justify-content-between align-items-center">
 
-                                                    <div className="col-md-3 col-lg-3 col-xl-3 title-mobie">
-                                                        <h6 className="text-muted">Tên sản phẩm</h6>
-                                                    </div>
-                                                    <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 title-mobie">
-                                                        <h6 className="text-muted">Số tháng thuê</h6>
-                                                    </div>
-                                                    {/* <div className="col-md-3 col-lg-3 col-xl-3">
-                                                            <h6 className="text-muted">Description</h6>
-                                                            <h6 className="text-black mb-0">{item.product.description}</h6>
-                                                        </div> */}
-                                                    <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 title-mobie">
-                                                        <h6 className="text-muted">Giá tiền</h6>
-                                                    </div>
-                                                    <div className="col-md-1 col-lg-1 col-xl-1">
-                                                        <h6 className="text-muted"></h6>                                                        </div>
-                                                </div>}
+                                            <div style={{ display: "flex", flexDirection: "row", width: "100%" }} className=" row mb-2 d-flex justify-content-between align-items-center">
+
+                                                <div className="col-md-3 col-lg-3 col-xl-3 title-mobie">
+                                                    <h6 className="text-muted">Tên sản phẩm</h6>
+                                                </div>
+                                                <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 title-mobie">
+                                                    <h6 className="text-muted">Số tháng thuê</h6>
+                                                </div>
+                                                <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 title-mobie">
+                                                    <h6 className="text-muted">Giá tiền</h6>
+                                                </div>
+                                                <div className="col-md-1 col-lg-1 col-xl-1">
+                                                    <h6 className="text-muted"></h6>                                                        </div>
+                                            </div>
                                             <div className='scrollbar' style={{ boxShadow: 'none' }} id='style-1' >
                                                 <hr className="mb-3 mt-1" />
 
-                                                {data ? Object.entries(data).map((key, value) => (
+                                                {arrayCart.length > 0 ? Object.entries(data).map((key, value) => (
                                                     <>
                                                         {renderMap(key)}
                                                     </>
 
-                                                )) : ''}
+                                                )) : <div style={{ width: '39%', margin: 'auto' }}>Hiện chưa có trụ nào ! </div>}
                                             </div>
 
                                             {/* <hr className="my-4" /> */}
@@ -319,20 +349,22 @@ function CartDatabase() {
                                                 <h5>{formatMoney(sum)}</h5>
                                             </div>
 
-                                            {token && decoded ? <button
-                                                style={{ marginTop: '120px' }}
-                                                disabled={btnDisabled}
-                                                type="button"
-                                                className="btn btn-dark btn-block btn-lg myDIV"
-                                                data-mdb-ripple-color="dark"
-                                                onClick={clickOrder}
-                                            >
+                                            {arrayCart.length > 0 ?
+                                                token && decoded ? <button
+                                                    style={{ marginTop: '' }}
+                                                    disabled={btnDisabled}
+                                                    type="button"
+                                                    className="btn btn-dark btn-block btn-lg myDIV"
+                                                    data-mdb-ripple-color="dark"
+                                                    onClick={clickOrder}
+                                                >
 
-                                                {btnDisabled ? 'Vui lòng chờ...' : 'Đặt trụ'}
+                                                    {btnDisabled ? 'Vui lòng chờ...' : 'Đặt trụ'}
 
-                                            </button> : <NavLink to={'/auth/login'}> <button type="button"
-                                                className="btn btn-dark btn-block btn-lg"
-                                                data-mdb-ripple-color="dark">Vui lòng đăng nhập để thuê trụ ! </button> </NavLink>}
+                                                </button> : <NavLink to={'/auth/login'}> <button type="button"
+                                                    className="btn btn-dark btn-block btn-lg"
+                                                    data-mdb-ripple-color="dark">Vui lòng đăng nhập để thuê trụ ! </button> </NavLink> : null}
+
                                             <div className="hide">Nếu bạn muốn thanh toán trực tiếp tại doanh nghiệp, bạn chỉ cần nhấn đặt đơn hàng ở đây và không thao tác gì thêm !!!</div>
                                         </div>
                                     </div>

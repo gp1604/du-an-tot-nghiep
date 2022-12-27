@@ -4,8 +4,9 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { useEffect } from 'react';
 
-export default function AddPictures({ open, setOpen, onSubmitAdd }) {
+export default function AddPictures({ open, setOpen, onSubmitAdd, isLoading }) {
     const [data, setData] = useState({
         category: "",
         image: "",
@@ -33,7 +34,12 @@ export default function AddPictures({ open, setOpen, onSubmitAdd }) {
             image: "",
         })
         setOpen(false)
+        setValueStateCategory(0)
     }
+    useEffect(() => {
+        // setValueStateCategory(0)
+    }, [])
+
     const [valueStateCategory, setValueStateCategory] = useState('');
     const handleChangeCategory = (event) => {
         const value = event.target.value;
@@ -71,7 +77,7 @@ export default function AddPictures({ open, setOpen, onSubmitAdd }) {
                                 defaultValue='banner'
                                 onChange={handleChangeCategory}>
 
-                                <MenuItem  value={'banner'}>Ảnh banner</MenuItem>
+                                <MenuItem value={'banner'}>Ảnh banner</MenuItem>
                                 <MenuItem value={'logo'}>Ảnh logo</MenuItem>
                                 {/* <MenuItem value={'about'}>Ảnh about us</MenuItem> */}
                             </Select>
@@ -83,8 +89,8 @@ export default function AddPictures({ open, setOpen, onSubmitAdd }) {
                         <Button onClick={handleClose} sx={{ marginRight: "5px" }} variant="contained" color="success">
                             Đóng
                         </Button>
-                        <Button onClick={onClickAdd} variant="contained" color="success">
-                            Thêm
+                        <Button disabled={isLoading} onClick={onClickAdd} variant="contained" color="success">
+                            {isLoading ? "Xin chờ ..." : "Xác nhận"}
                         </Button>
                     </div>
 

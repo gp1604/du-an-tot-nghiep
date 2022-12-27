@@ -16,6 +16,8 @@ export default function AdminBank() {
     const handleCloseDelete = () => setOpenDelete(false);
     const [openEdit, setOpenEdit] = useState(false)
     const [selected, setSelected] = useState(undefined)
+    const [isLoading, setIsLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         fetchAPI()
     }, [])
@@ -41,11 +43,13 @@ export default function AdminBank() {
             else if (data.bankName === '') {
                 toast.warning('Tên ngân hàng không được bỏ trống', { autoClose: 1500 })
             } else {
+                setIsLoading(true)
                 const response = await axios.post(API_BANK_ADD, data)
                 if (response.status === 200) {
                     setOpen(false)
                     toast.success("Thêm thành công", { autoClose: 1500 })
                     fetchAPI()
+                    setIsLoading(false)
                     setData({
                         bankAccountName: "",
                         bankAccountNumber: "",
@@ -55,6 +59,7 @@ export default function AdminBank() {
                 }
             }
         } catch (error) {
+            setIsLoading(false)
             showError()
         }
     }
@@ -78,31 +83,40 @@ export default function AdminBank() {
         else if (data.bankName === '') {
             toast.warning('Tên chủ tài khoản không được bỏ trống', { autoClose: 1500 })
         } else {
-            const response = await axios.post(API_BANK_UPDATE, data)
-            if (response.status === 200) {
-                toast.success("Sửa thành công", { autoClose: 1500 })
-                fetchAPI()
-                setOpenEdit(false)
+            setIsLoading(true)
+            try {
+                const response = await axios.post(API_BANK_UPDATE, data)
+                if (response.status === 200) {
+                    toast.success("Sửa thành công", { autoClose: 1500 })
+                    fetchAPI()
+                    setIsLoading(false)
+                    setOpenEdit(false)
+                }
+            } catch (error) {
+                setIsLoading(false)
+                showError(error)
             }
         }
     }
 
     const onDelete = async (id) => {
+        setLoading(true)
         console.log(id);
         const response = await axios.post(API_BANK_REMOVE + id)
         if (response.status === 200) {
             fetchAPI()
             toast.success("Xoá thành công", { autoClose: 1500 })
             setOpenDelete(false)
+            setLoading(false)
         }
     }
 
     return (
         <div>
-            <Banks onEdit={onEdit} data={data} setOpen={setOpen} onDelete={onDelete}
+            <Banks loading={loading} onEdit={onEdit} data={data} setOpen={setOpen} onDelete={onDelete}
                 handleOpenDelete={handleOpenDelete} openDelete={openDelete} handleCloseDelete={handleCloseDelete} />
-            <CreateBanks open={open} setOpen={setOpen} onSubmitAdd={onSubmitAdd} />
-            {selected && <EditBanks onHandleEdit={onHandleEdit} item={selected} openEdit={openEdit} setOpenEdit={setOpenEdit} />
+            <CreateBanks isLoading={isLoading} open={open} setOpen={setOpen} onSubmitAdd={onSubmitAdd} />
+            {selected && <EditBanks isLoading={isLoading} onHandleEdit={onHandleEdit} item={selected} openEdit={openEdit} setOpenEdit={setOpenEdit} />
             }
         </div>
     )

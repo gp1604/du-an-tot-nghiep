@@ -41,16 +41,24 @@ const Register = () => {
     e.preventDefault();
     if (user.phoneNumber.length < 10) {
       toast.warning('Số điện thoại phải có 10 kí tự', {
-        autoClose: 3000
+        autoClose: 1500
       })
     } else {
       setIsLoading(true)
       try {
-        const response = await axios.post(API_SIGNUP, user)
+        const response = await
+          toast.promise(
+            axios.post(API_SIGNUP, user),
+            {
+              pending: 'Đang xử lý ...',
+              success: 'Đăng ký thành công',
+            }
+          );
+
         if (response && response.status === 201) {
-          toast.success('Đăng ký thành công', {
-            autoClose: 3000
-          })
+          // toast.success('Đăng ký thành công', {
+          //   autoClose: 1500
+          // })
           history.push('/auth/login')
           setIsLoading(false)
         }

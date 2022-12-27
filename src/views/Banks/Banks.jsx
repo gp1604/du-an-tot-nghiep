@@ -21,6 +21,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import { Container, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import ReactLoading from 'react-loading';
+
 const columns = [
     { id: 'Id', label: 'Id', minWidth: 70, maxWidth: 70 },
     {
@@ -61,7 +63,7 @@ const columns = [
     },
 
 ];
-export default function Banks({ setOpen, data, handleOpenDelete, openDelete, handleCloseDelete, onDelete, onEdit }) {
+export default function Banks({ loading, setOpen, data, handleOpenDelete, openDelete, handleCloseDelete, onDelete, onEdit }) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(6);
 
@@ -80,6 +82,25 @@ export default function Banks({ setOpen, data, handleOpenDelete, openDelete, han
     const [id, setId] = useState()
     return (
         <div>
+            <Modal
+                open={loading}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100vh",
+                        // borderRadius: "10px"
+                    }}
+                >
+                    <ReactLoading type="spin" color="#ffffff" height={"3%"} width={"3%"} />
+                </Box>
+            </Modal>
             <Container fluid style={{ height: "200px" }} className="header bg-gradient-info pb-8 pt-5 pt-md-8 ">
                 <Paper sx={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
 

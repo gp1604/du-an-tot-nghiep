@@ -20,6 +20,9 @@ import Map from "./UserMap";
 import Nouislider from "nouislider-react";
 import { API_ADD_COMBO_TO_CART } from "../../utils/const";
 import { Button } from '@mui/material';
+import { API_WISHLIST_REMOVE } from "utils/const";
+import { API_WISHLIST_GET } from "utils/const";
+import { API_WISHLIST_ADD } from "utils/const";
 
 const style = {
     position: 'absolute',
@@ -54,6 +57,77 @@ function AddressDetail() {
     const history = useHistory();
     const [count, setCount] = useState(null);
     const getAddress = async () => {
+        try {
+            if (!token) {
+                const response = selected.num1 === 0 && selected.num2 === 0 ?
+                    await
+                        toast.promise(
+                            axios.get(API_GET_ADDRESS_DETAIL_USER + id[0])
+                           ,{
+                                pending: 'Đang tải dữ liệu... ',
+                            }, {
+                            style: {
+                                boxShadow: '5px 5px 20px 5px #black',
+                            },
+                        }
+                        )
+                    : await axios.get(API_GET_ADDRESS_DETAIL_USER + id[0] + "?num1=" + selected.num1 + "&num2=" + selected.num2);
+                if (response.status === 200) {
+                    setDataAddressProduct(response.data.product)
+                    setAddress(response.data.address)
+                }
+
+            } else {
+                const response = selected.num1 === 0 ?
+                    await
+                        toast.promise(
+                            axios.get(API_GET_ADDRESS_DETAIL_NOT_TOKEN + id[0], {
+                                headers: {
+                                    'authorization': 'Bearer ' + token,
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            ,
+                            {
+                                pending: 'Đang xử lý ... ',
+                            }, {
+                            style: {
+                                boxShadow: '5px 5px 20px 5px #black',
+                            },
+                        }
+                        )
+                    : await axios.get(API_GET_ADDRESS_DETAIL_NOT_TOKEN + id[0] + "?num1=" + selected.num1 + "&num2=" + selected.num2, {
+                        headers: {
+                            'authorization': 'Bearer ' + token,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                if (response.status === 200) {
+                    setDataAddressProduct(response.data.product)
+                    setAddress(response.data.address)
+                    setCount(response.data.product.filter(product => product.status === "AVAILABLE" && product.inCart !== true).length)
+                }
+            }
+
+        } catch (error) {
+            if (error && error.response.status === 400 || error.response.status === 404) {
+                toast.warning('Không có địa chỉ này !', {
+                    autoClose: 3000
+                })
+                history.push('/auth/pageNotFound')
+            }
+            if (error && error.response.status === 500 || error.response.status === 500) {
+                console.log(error);
+                setDataAddressProduct({})
+                console.log(dataAddressProduct);
+            }
+
+        }
+    }
+
+    const getAddressNotPending = async () => {
         try {
             if (!token) {
                 const response = selected.num1 === 0 && selected.num2 === 0 ?
@@ -101,9 +175,68 @@ function AddressDetail() {
 
         }
     }
+    useEffect(() => {
+        getWishList()
+    }, [])
+    const [data, setData] = useState([])
+    const getWishList = async (id) => {
+        const response = await axios.get(API_WISHLIST_GET + 0, {
+            headers: {
+                'authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        if (response.status === 200) {
+            setData(response.data)
+        }
+    }
+
+    let user = localStorage.getItem('user')
+
+    const onClickAddWishList = async (id) => {
+        setLoading(true)
+        if (!token && !user) {
+            history.push('/auth/login')
+            toast.warning("Vui lòng đăng nhập!")
+        } else {
+            const response = await axios.post(API_WISHLIST_ADD + id, {}, {
+                headers: {
+                    'authorization': 'Bearer ' + token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            if (response.status === 200) {
+                getWishList()
+                toast.success("Đã thêm vào danh sách yêu thích.", { autoClose: 1500 })
+                setLoading(false)
+            }
+        }
+
+    }
+
+    const onHandleRemoveWishList = async (id) => {
+        setLoading(true)
+        const response = await axios.post(API_WISHLIST_REMOVE + id, {}, {
+            headers: {
+                'authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        if (response.status === 200) {
+            getWishList()
+            toast.success("Đã xoá khỏi danh sách yêu thích.", { autoClose: "1500" })
+            setLoading(false)
+        }
+
+    }
+    const [loading, setLoading] = useState(false)
 
     const onClickRemoveItemCart = async (id) => {
         if (token) {
+            setLoading(true)
             const response = await axios.put(API_CART_REMOVE + id, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -129,6 +262,8 @@ function AddressDetail() {
                 })
                 localStorage.setItem('countCart', JSON.stringify(arrayCart.length));
                 window.dispatchEvent(new Event("storage"));
+                setLoading(false)
+
             }
         } else {
             let listCartItems = JSON.parse(localStorage.getItem("cartTemp"))
@@ -175,6 +310,7 @@ function AddressDetail() {
         let checkCartHasBeen = true
         try {
             if (token) {
+                setLoading(true)
                 // when already login
                 const response = await axios.post(API_ADD_CART, {
                     month: 1,
@@ -207,6 +343,7 @@ function AddressDetail() {
                     localStorage.setItem('countCart', JSON.stringify(arrayCart.length));
                     window.dispatchEvent(new Event("storage"));
                     // history.push('/auth/cart')
+                    setLoading(false)
                 };
             } else {
                 // when don't login
@@ -244,6 +381,7 @@ function AddressDetail() {
                 // history.push('/auth/cart')
             }
         } catch (error) {
+            setLoading(false)
             console.log(error.response.data)
             if (error.response.data.message) {
                 toast.error(`${error.response.data.message}`, {
@@ -304,6 +442,7 @@ function AddressDetail() {
         }
     }
     const addComboToCart = async () => {
+        setLoading(true)
         const response = await axios.post(API_ADD_COMBO_TO_CART + '?addressId=' + id[0] + '&num1=' + selected.num1 + '&num2=' + selected.num2, {}, {
             headers: {
                 'authorization': 'Bearer ' + token,
@@ -333,6 +472,8 @@ function AddressDetail() {
                 localStorage.setItem('countCart', JSON.stringify(arrayCart.length));
                 window.dispatchEvent(new Event("storage"));
             }
+            setLoading(false);
+
         }
     }
 
@@ -495,7 +636,8 @@ function AddressDetail() {
                 </Modal>
             </div>
             {dataAddressProduct.length > 0 ?
-                <ProductComponent addCart={addCart} onClickRemoveItemCart={onClickRemoveItemCart} product={dataAddressProduct} setItem={setItem} />
+                <ProductComponent data={data} onClickAddWishList={onClickAddWishList} onHandleRemoveWishList={onHandleRemoveWishList}
+                    loading={loading} addCart={addCart} onClickRemoveItemCart={onClickRemoveItemCart} product={dataAddressProduct} setItem={setItem} />
                 : <div style={{ width: `300px`, color: 'white', fontSize: '1.1em', margin: '50px auto auto auto', }}> Chưa có trụ nào ở đoạn đường này !</div>
             }
         </div>

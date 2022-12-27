@@ -71,7 +71,7 @@ const columns = [
   },
   {
     id: 'quantityPillar',
-    label: 'Số trụ được thuê',
+    label: 'Số lần được thuê',
     minWidth: 100,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
@@ -306,8 +306,6 @@ const Index = (props) => {
     dataArr.push(JSON.parse(value[0]))
   })
 
-  console.log('data ', arr2);
-  console.log('dataArr ', dataArr);
 
   useEffect(() => {
     overview()

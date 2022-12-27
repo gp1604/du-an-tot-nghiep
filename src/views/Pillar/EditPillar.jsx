@@ -158,7 +158,6 @@ export default function EditPillar({ isLoading, item, dataAddress, openEdit, set
     function onClickSelected(number1, number2) {
         setSelected({ num1: number1, num2: number2, selected: true })
 
-        console.log("clicked")
     }
 
     useEffect(() => {

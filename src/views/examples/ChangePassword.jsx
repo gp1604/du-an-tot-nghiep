@@ -42,7 +42,7 @@ export default function ChangePassword() {
                 })
             }
             else if (data.newPassword.length < 8) {
-                toast.error('Mật khẩu phải lớn hơn 9 kí tự', {
+                toast.error('Mật khẩu phải lớn hơn 8 kí tự', {
                     autoClose: 2000
                 })
             }
@@ -54,10 +54,10 @@ export default function ChangePassword() {
                 }
             })
             if (response.status === 200) {
-                toast.success("Đổi mật khẩu thành công", { autoClose: "1500" })
+                toast.success("Đổi mật khẩu thành công", { autoClose: 1500 })
             }
         } catch (error) {
-            showError()
+            showError(error)
         }
     }
 

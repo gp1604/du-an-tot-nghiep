@@ -90,7 +90,8 @@ export default function HiringPillar({ data, page, search, rowsPerPage, totalPag
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {data
+                                {data.length > 0 ? 
+                                data
                                     // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((item, index) => (
                                         <TableRow hover role="checkbox" key={index}>
@@ -115,7 +116,7 @@ export default function HiringPillar({ data, page, search, rowsPerPage, totalPag
 
                                             {/* <TableCell sx={{ textAlign: 'right' }}><Button variant="contained" color='success' >Accept</Button></TableCell> */}
                                         </TableRow>
-                                    ))}
+                                    )) :   <TableCell style={{ borderBottom: '0px solid black' }}> <h4 style={{ fontStyle: 'italic', marginTop: '8px', position: 'absolute' }} > Hiện chưa có trụ nào đã cho thuê !</h4></TableCell>}
                             </TableBody>
                         </Table>
                     </TableContainer>

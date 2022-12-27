@@ -8,6 +8,7 @@ import { API_CLICK_SEARCH_ADDRESS } from 'utils/const'
 import { API_ADD_PILLAR } from 'utils/const'
 import { API_DELETE_PILLAR } from 'utils/const'
 import { API_GET_PILLAR } from 'utils/const'
+import { showError } from 'utils/error'
 import Address from 'views/pillarAddress/Address'
 import CreateAddress from 'views/pillarAddress/CreateAddress'
 import EditAddress from 'views/pillarAddress/EditAddress'
@@ -29,6 +30,7 @@ export default function AdminPillar() {
   const handleCloseDelete = () => setOpenDelete(false);
   const [pageCRUD, setPageCRUD] = React.useState(1);
   const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     fetchAPI()
   }, [])
@@ -91,6 +93,9 @@ export default function AdminPillar() {
     else if (data.street === '') {
       toast.warning("Đường không được để trống", { autoClose: 1500 });
     }
+    else if (data.description === '') {
+      toast.warning("Mô tả không được để trống", { autoClose: 1500 });
+    }
     else {
       setIsLoading(true)
       try {
@@ -103,9 +108,8 @@ export default function AdminPillar() {
         if (response && response.status === 201) {
           toast.success("Thêm thành công", { autoClose: 1500 });
           setOpenEdit(false);
-          fetchAPI();
+          fetchAPIWhenCRUD();
           setIsLoading(false)
-
           setDataAddress({
             city: '',
             street: '',
@@ -118,27 +122,7 @@ export default function AdminPillar() {
         //catch show error
       } catch (error) {
         setIsLoading(false)
-        console.log(error.response.data)
-        if (error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error) {
-          toast.error(`${error.response.data.error}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error && error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else {
-          toast.error('Error', {
-            autoClose: 2000
-          })
-        }
+        showError(error)
       }
     }
 
@@ -152,6 +136,9 @@ export default function AdminPillar() {
   const onSubmitEdit = async (data) => {
     if (data.city === '') {
       toast.warning("Thành phố không được để trống", { autoClose: 1500 });
+    }
+    else if (data.street === '') {
+      toast.warning("Đường không được để trống", { autoClose: 1500 });
     }
     else if (data.street === '') {
       toast.warning("Đường không được để trống", { autoClose: 1500 });
@@ -175,64 +162,25 @@ export default function AdminPillar() {
         //catch show error
       } catch (error) {
         setIsLoading(false)
-
-        console.log(error.response.data)
-        if (error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error) {
-          toast.error(`${error.response.data.error}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error && error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else {
-          toast.error('Error', {
-            autoClose: 2000
-          })
-        }
+        showError(error)
       }
     }
   }
 
   const onDelete = async (id) => {
+    setLoading(true)
     try {
       const response = await axios.delete(API_DELETE_PILLAR + id)
       if (response && response.status === 201) {
         setOpenDelete(false)
         toast.success("Xóa thành công", { autoClose: 1500 });
         fetchAPIWhenCRUD();
+        setLoading(false)
       }
       //catch show error
     } catch (error) {
-      console.log(error.response.data)
-      if (error.response.data.message) {
-        toast.error(`${error.response.data.message}`, {
-          autoClose: 2000
-        })
-      }
-      else if (error.response.data.error) {
-        toast.error(`${error.response.data.error}`, {
-          autoClose: 2000
-        })
-      }
-      else if (error.response.data.error && error.response.data.message) {
-        toast.error(`${error.response.data.message}`, {
-          autoClose: 2000
-        })
-      }
-      else {
-        toast.error('Error', {
-          autoClose: 2000
-        })
-      }
-
+      showError(error)
+      setLoading(false)
     }
   }
 
@@ -250,7 +198,7 @@ export default function AdminPillar() {
     <div>
       <CreateAddress isLoading={isLoading} onSubmit={onSubmit} open={open} setOpen={setOpen} />
       {selected && <EditAddress isLoading={isLoading} item={selected} onSubmitEdit={onSubmitEdit} openEdit={openEdit} setOpenEdit={setOpenEdit} />}
-      <Address search={search} open={open} setOpen={setOpen} data={data} onDelete={onDelete} onEdit={onEdit} totalPages={totalPages}
+      <Address loading={loading} search={search} open={open} setOpen={setOpen} data={data} onDelete={onDelete} onEdit={onEdit} totalPages={totalPages}
         page={page} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} rowsPerPage={rowsPerPage}
         openDelete={openDelete} setOpenDelete={setOpenDelete} handleOpenDelete={handleOpenDelete} handleCloseDelete={handleCloseDelete} />
     </div>

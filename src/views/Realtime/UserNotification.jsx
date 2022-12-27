@@ -29,7 +29,7 @@ const UserNotification = (params) => {
     }
 
     const onConnected = () => {
-        stompClient.subscribe('/user/' + Number(decoded.sub.slice(0, 1)) + '/private', onMessageReceived);
+        stompClient.subscribe('/user/' + decoded.id + '/private', onMessageReceived);
     }
 
     const [count, setCount] = useState(0);
@@ -52,7 +52,7 @@ const UserNotification = (params) => {
         }
     };
     const getNotification = async () => {
-        const response = await axios.get(API + '/notification/?id=' + Number(decoded.sub.slice(0, 1)))
+        const response = await axios.get(API + '/notification/?id=' + decoded.id)
         if (response.status === 200) {
             handleRequest(response.data)
             params.changeUserCount(response.data.filter((data) => data.checked === false).length)

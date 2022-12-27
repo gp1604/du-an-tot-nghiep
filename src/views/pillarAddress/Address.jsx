@@ -31,6 +31,8 @@ import {
 } from "../../utils/const";
 import AddressPointBox from "./AddressPointBox";
 import { Fragment } from 'react';
+import ReactLoading from 'react-loading';
+
 const columns = [
     { id: 'add', label: 'Map', minWidth: 70 },
     { id: 'Id', label: 'Id', minWidth: 70 },
@@ -66,7 +68,7 @@ const columns = [
     },
 ];
 
-export default function Address({ handleOpenDelete, handleCloseDelete, openDelete, search, rowsPerPage, data, onDelete, onEdit, open, setOpen, totalPages, handleChangePage, handleChangeRowsPerPage, page }) {
+export default function Address({ loading, handleOpenDelete, handleCloseDelete, openDelete, search, rowsPerPage, data, onDelete, onEdit, open, setOpen, totalPages, handleChangePage, handleChangeRowsPerPage, page }) {
     const [openDetailData, setOpenDetailData] = useState(false);
     const closeDetailData = () => setOpenDetailData(false);
     const style = {
@@ -96,6 +98,26 @@ export default function Address({ handleOpenDelete, handleCloseDelete, openDelet
 
     return (
         < >
+            <Modal
+                open={loading}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100vh",
+                        // borderRadius: "10px"
+                    }}
+                >
+                    <ReactLoading type="spin" color="#ffffff" height={"3%"} width={"3%"} />
+                </Box>
+
+            </Modal>
             {openDetailData ? <AddressPointBox openDetail={openDetailData} closeDetail={closeDetailData} addressId={id} /> : null}
             <Container fluid style={{ height: "200px" }} className="header bg-gradient-info pb-8 pt-5 pt-md-8 ">
                 <Paper sx={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
@@ -145,7 +167,7 @@ export default function Address({ handleOpenDelete, handleCloseDelete, openDelet
                                     // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((item, index) => (
                                         <TableRow hover role="checkbox" key={index}>
-                                             <TableCell sx={{ textAlign: 'left', color: 'green', cursor: 'pointer' }}>
+                                            <TableCell sx={{ textAlign: 'left', color: 'green', cursor: 'pointer' }}>
                                                 <AddLocationAltIcon onClick={() => openDetailPoint(item.id)}>
                                                 </AddLocationAltIcon>
                                             </TableCell>

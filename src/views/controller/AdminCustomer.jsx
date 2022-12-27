@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { API_UPDATE_ROLE } from 'utils/const';
 import { API_GET_USERS } from 'utils/const';
+import { showError } from 'utils/error';
 import Customer from 'views/customer/Customer';
 import EditCustomer from 'views/customer/EditCustomer';
 
@@ -16,6 +17,8 @@ export default function AdminCustomer() {
   const [openEdit, setOpenEdit] = React.useState(false)
   const [pageCRUD, setPageCRUD] = React.useState(1);
   const handleCloseEdit = () => setOpenEdit(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   useEffect(() => {
     fetchAPI()
   }, [])
@@ -86,40 +89,21 @@ export default function AdminCustomer() {
     if (data.roleName === null) {
       toast.error("Vai trò không được để trống", { autoClose: 1500 })
     } else {
+      setIsLoading(true)
       try {
         const response = await axios.put(API_UPDATE_ROLE + data.id + "/update?roleName=" + roleSub)
         if (response && response.status === 200) {
           toast.success("Sửa thành công", { autoClose: "1500" })
           fetchAPIWhenCRUD();
           setOpenEdit(false)
-
+          setIsLoading(false)
         } else if (response && response.status === 400) {
           toast.error("Người dùng đã có vai trò này!", { autoClose: "1500" })
         }
-
         //catch show error
       } catch (error) {
-        console.log(error.response.data)
-        if (error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error) {
-          toast.error(`${error.response.data.error}`, {
-            autoClose: 2000
-          })
-        }
-        else if (error.response.data.error && error.response.data.message) {
-          toast.error(`${error.response.data.message}`, {
-            autoClose: 2000
-          })
-        }
-        else {
-          toast.error('Error', {
-            autoClose: 2000
-          })
-        }
+        setIsLoading(false)
+        showError(error)
       }
     }
 
@@ -135,7 +119,7 @@ export default function AdminCustomer() {
   }
   return (
     <div>
-      {selected && <EditCustomer item={selected} openEdit={openEdit} handleCloseEdit={handleCloseEdit} onSubmitEdit={onSubmitEdit} />}
+      {selected && <EditCustomer isLoading={isLoading} item={selected} openEdit={openEdit} handleCloseEdit={handleCloseEdit} onSubmitEdit={onSubmitEdit} />}
       <Customer search={search} onEdit={onEdit} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} data={data} page={page} rowsPerPage={rowsPerPage} totalPages={totalPages} />
     </div>
   )

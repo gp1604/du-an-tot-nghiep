@@ -81,7 +81,7 @@ export default function CreatePillar({ data, onSubmit, open, setOpen, isLoading 
                             Đóng
                         </Button>
                         <Button disabled={isLoading} onClick={onClickAdd} variant="contained" color="success">
-                            {isLoading ? "Xin chờ ..." : "Xác nhận"}
+                            {isLoading ? "Xin chờ..." : "Xác nhận"}
                         </Button>
                     </div>
 

@@ -35,6 +35,7 @@ import usePagination from 'views/pillarAddress/Pagination';
 import { formatMoney } from 'common/formatMoney';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 
+import ReactLoading from 'react-loading';
 
 const style = {
     position: 'absolute',
@@ -79,14 +80,26 @@ function TableAddress() {
         onChangeSearchNew()
         // onclickFilter()
     };
+    const [loading, setLoading] = useState(false)
 
     const getAllAddRess = async (e) => {
-        const response = await axios.get(API_GET_ADDRESS + page + '?dataPerPage=6&sort=desc&sortField=totalProductAvailable')
+        setLoading(true)
+
+        const response = await
+            toast.promise(
+                axios.get(API_GET_ADDRESS + page + '?dataPerPage=6&sort=desc&sortField=totalProductAvailable'),
+                {
+                    pending: 'Đang tải dữ liệu... ',
+                }, {
+                style: {
+                    boxShadow: '5px 5px 20px 5px #black',
+                },
+            }
+            );
         if (response) {
+            setLoading(false)
             setData(response.data.contents)
             setDataInfo(response.data.pageInfo)
-
-
         }
     }
 
@@ -174,6 +187,7 @@ function TableAddress() {
     }, [page])
     return (
         <React.Fragment>
+
             <Box className="container-products" sx={{ width: '100%', margin: 'auto' }}>
                 <Box className='container-search-sort' sx={{ flexGrow: 1, mt: 10, marginTop: '30px !important' }}>
                     <Grid container spacing={2}>
@@ -249,7 +263,7 @@ function TableAddress() {
                                         {/* <p>Mô tả: {item.description}</p> */}
                                         <p style={{ marginBottom: "5px" }}>Giá từ: <span style={{ margin: "0", fontSize: '20px', fontWeight: '600' }}>{formatMoney(item.minPrice)}</span> </p>
                                         <p style={{ marginBottom: "10px", }}>Trụ còn trống: <span style={{ margin: "0", color: 'red' }}>{item.totalProductAvailable}</span>/{item.totalProduct}</p>
-                                        <p style={{ fontSize: '0.9em', fontWeight: '600' }}>{item.city} City</p>
+                                        <p style={{ fontSize: '0.9em', fontWeight: '600' }}>{item.city} </p>
                                         <NavLink to={'/auth/address/' + item.id}>
                                             <Button className='btn-custom-product' sx={{
                                                 // mt:5,

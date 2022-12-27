@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-export default function EditCategory({ openEdit, setOpenEdit, item, onSubmitEdit }) {
+export default function EditCategory({ openEdit, setOpenEdit, item, onSubmitEdit, isLoading }) {
     const { name, description } = item;
     const [data, setData] = useState(item || {
         name: item.name || "",
@@ -37,8 +37,8 @@ export default function EditCategory({ openEdit, setOpenEdit, item, onSubmitEdit
                 >
                     <h2 style={{ textAlign: 'center' }}>Thêm danh mục</h2>
                     <div style={{ display: 'flex', flexDirection: "column-reverse", margin: "10px" }} className="form-flex">
-                        <TextField onChange={onChangeText} defaultValue={name} name="description" style={{ margin: '5px' }} fullWidth label='Chú thích' />
-                        <TextField onChange={onChangeText} defaultValue={description} name="name" style={{ margin: '5px' }} fullWidth label='Tên danh mục' />
+                        <TextField onChange={onChangeText} defaultValue={description} name="description" style={{ margin: '5px' }} fullWidth label='Chú thích' />
+                        <TextField onChange={onChangeText} defaultValue={name} name="name" style={{ margin: '5px' }} fullWidth label='Tên danh mục' />
                     </div>
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <Button onClick={e => {
@@ -50,8 +50,8 @@ export default function EditCategory({ openEdit, setOpenEdit, item, onSubmitEdit
                         }} sx={{ marginRight: "5px" }} variant="contained" color="success">
                             Đóng
                         </Button>
-                        <Button onClick={() => onSubmitEdit(data)} variant="contained" color="success">
-                            Sửa
+                        <Button disabled={isLoading} onClick={() => onSubmitEdit(data)} variant="contained" color="success">
+                            {isLoading ? "Xin chờ ..." : "Xác nhận"}
                         </Button>
                     </div>
 

@@ -61,9 +61,8 @@ function Notification() {
     }
     const [countUser, setUserCount] = React.useState(0);
 
-
     const markAsRead = async () => {
-         await axios.post(API_GET_MARK_AS_READ + Number(decoded.sub.slice(0, 1)))
+        await axios.post(API_GET_MARK_AS_READ + decoded.id)
     }
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -103,7 +102,7 @@ function Notification() {
                 aria-expanded={open ? 'true' : undefined}
                 variant="contained"
                 disableElevation
-                style={{cursor: 'pointer'}}
+                style={{ cursor: 'pointer' }}
                 onClick={handleClick}
 
             >

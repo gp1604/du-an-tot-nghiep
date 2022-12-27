@@ -92,7 +92,7 @@ export default function AvailablePillar({ data, page, search, rowsPerPage, total
                                             <TableCell>{item.id}</TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}>  {item.name} </TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}> {formatMoney(item.price)}</TableCell>
-                                            <TableCell sx={{ textAlign: 'center' }}> {item.status}</TableCell>
+                                            {item.status === 'AVAILABLE' ? <TableCell sx={{ textAlign: 'center' }}> Có sẵn</TableCell> : <TableCell sx={{ textAlign: 'center' }}> {item.status}</TableCell>}
                                             <TableCell sx={{ textAlign: 'center' }}> {item.description}</TableCell>
                                             <TableCell sx={{ textAlign: 'center', height: '65px' }}> {item.address.fullAddress}</TableCell>
                                         </TableRow>

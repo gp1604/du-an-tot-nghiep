@@ -13,12 +13,13 @@ import {
     Col
 } from "reactstrap";
 import { NavLink, useHistory } from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import styled from "styled-components";
 import './forgotPassword.css'
 import { API_FORGOTPASSWORD } from "utils/const";
+import { showError } from "utils/error";
 
 const ForgotPassword = () => {
     const history = useHistory();
@@ -33,43 +34,30 @@ const ForgotPassword = () => {
     const onForgetPassword = async (e) => {
         e.preventDefault();
         if (data.email === '') {
-            toast.error('Email không được để trống', {
+            toast.warning('Email không được để trống', {
                 autoClose: 2000
             })
         }
         else {
             setIsLoading(true)
             try {
-                const response = await axios.post(API_FORGOTPASSWORD + data.email)
+                const response = await
+                    toast.promise(
+                        axios.post(API_FORGOTPASSWORD + data.email),
+                        {
+                            pending: 'Đang xử lý yêu cầu của bạn ... ',
+                            success: 'Vui lòng kiểm tra email của bạn',
+                        }
+                    );
                 if (response.status === 200) {
-                    toast.success('Vui lòng kiểm tra email của bạn', {
-                        autoClose: 3000
-                    })
+                    // toast.success('Vui lòng kiểm tra email của bạn', {
+                    //     autoClose: 3000
+                    // })
                     setShowMessage(true)
                 }
             } catch (error) {
                 setIsLoading(false)
-                console.log(error.response.data)
-                if (error.response.data.message) {
-                    toast.error(`${error.response.data.message}`, {
-                        autoClose: 2000
-                    })
-                }
-                else if (error.response.data.error) {
-                    toast.error(`${error.response.data.error}`, {
-                        autoClose: 2000
-                    })
-                }
-                else if (error.response.data.error && error.response.data.message) {
-                    toast.error(`${error.response.data.message}`, {
-                        autoClose: 2000
-                    })
-                }
-                else {
-                    toast.error('Error', {
-                        autoClose: 2000
-                    })
-                }
+                showError(error)
             }
         }
     }

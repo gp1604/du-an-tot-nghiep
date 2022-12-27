@@ -159,8 +159,8 @@ function CartLocal() {
     }
     return (
         <React.Fragment>
-            <section className="h-custom" style={{ backgroundColor: "white", height: '', marginBottom: '10px' }}>
-                <div style={{ backgroundColor: 'white' }}>
+            <section className="h-custom" style={{ backgroundColor: "white", height: '', marginBottom: '10px', borderRadius: '15px 0 0 15px' }}>
+                <div style={{ backgroundColor: 'white', borderRadius: '15px 0 0 15px' }}>
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col-12">
                             <div
@@ -169,8 +169,8 @@ function CartLocal() {
                             >
                                 <div className="card-body p-0">
                                     <div className="row g-0">
-                                        <div className="col-lg-8">
-                                            <div className="p-5">
+                                        <div className="col-lg-8 col-mobie ">
+                                            <div className="p-5 mb-2 margin-right-mobie">
                                                 <div className="d-flex justify-content-between align-items-center mb-5">
                                                     <h1 className="fw-bold mb-0 text-black">Thanh toán</h1>
                                                     {/* <ChatRoom/> */}
@@ -178,16 +178,16 @@ function CartLocal() {
                                                 </div>
                                                 {dataLocal.length ?
                                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }} className="row mb-2 d-flex justify-content-between align-items-center">
-                                                        <div className="col-md-2 col-lg-2 col-xl-2">
+                                                        <div className="col-md-2 col-lg-2 col-xl-2 ">
 
                                                         </div>
-                                                        <div className="col-md-3 col-lg-3 col-xl-3">
+                                                        <div className="col-md-3 col-lg-3 col-xl-3 title-mobie">
                                                             <h6 className="text-muted">Tên sản phẩm</h6>
                                                         </div>
-                                                        <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3">
+                                                        <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 title-mobie">
                                                             <h6 className="text-muted">Số tháng thuê</h6>
                                                         </div>
-                                                        <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3">
+                                                        <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 title-mobie">
                                                             <h6 className="text-muted">Giá tiền</h6>
                                                         </div>
                                                         <div className="col-md-1 col-lg-1 col-xl-1">
@@ -198,7 +198,7 @@ function CartLocal() {
                                                     <hr className="mb-3 mt-1" />
                                                     {dataLocal.length ? dataLocal.map((item, index) => (
                                                         <div key={index} style={{ display: "flex", flexDirection: "row", width: "100%" }} className="row mb-4 d-flex justify-content-between align-items-center">
-                                                            <div className="col-md-2 col-lg-2 col-xl-2">
+                                                            <div className="col-md-2 col-lg-2 col-xl-2 img-mobie">
                                                                 <img
                                                                     src={item.imageProduct}
                                                                     className="img-fluid rounded-3"
@@ -232,11 +232,11 @@ function CartLocal() {
                                                                     <i className="fas fa-plus" />
                                                                 </button>
                                                             </div>
-                                                            <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3">
+                                                            <div style={{ display: "flex", justifyContent: "center" }} className="col-md-3 col-lg-3 col-xl-3 cus-text-spgp">
                                                                 {/* <h6 className="text-muted">Price</h6> */}
-                                                                <h6 className="text-black mb-0">{formatMoney(item.priceProduct * item.month)}</h6>
+                                                                <h6 style={{ fontSize: "14px" }} className="text-black mb-0">{formatMoney(item.priceProduct * item.month)}</h6>
                                                             </div>
-                                                            <div className="col-md-1 col-lg-1 col-xl-1 text-end">
+                                                            <div className="col-md-1 col-lg-1 col-xl-1 text-end cus-text-spgp">
                                                                 <div style={{ cursor: 'pointer' }} className="text-muted">
                                                                     <i onClick={(e) => handleRemoveCartItem(item.id)} className="fas fa-times" />
                                                                 </div>
@@ -246,9 +246,11 @@ function CartLocal() {
                                                                     {/* hide this div */}
                                                                 </div>
                                                             </div>
-                                                            <h6 style={{ fontSize: '0.8em' }} className="text-muted mt-2">Ngày bắt đầu:
-                                                                <span className="text-nowrap mr-3"> {new Date().getDate()}{"/"}{new Date().getMonth() + 1}{"/"}{new Date().getFullYear()}</span>
-                                                                - <span className='ml-2'>{showDate2(0, item.month)}</span></h6>
+                                                            <div style={{}} className="date-cus-sps">Ngày bắt đầu:
+                                                                <span> {new Date().getDate()}{"/"}{new Date().getMonth() + 1}{"/"}{new Date().getFullYear()}
+                                                                    -{showDate2(0, item.month)}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     )) :
                                                         <div style={{ width: "100%" }} >
@@ -289,7 +291,7 @@ function CartLocal() {
                                                 >
 
                                                     {btnDisabled ? 'Vui lòng chờ...' : 'Đặt trụ'}
-                                                </button> : <NavLink to={'/auth/login'}> <button style={{ marginTop: '120px' }} type="button"
+                                                </button> : <NavLink to={'/auth/login'}> <button style={{ marginTop: '' }} type="button"
                                                     className="btn btn-dark btn-block btn-lg"
                                                     data-mdb-ripple-color="dark">Vui lòng đăng nhập để thuê trụ ! </button> </NavLink>}
 

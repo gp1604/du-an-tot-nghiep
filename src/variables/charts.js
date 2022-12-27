@@ -135,7 +135,7 @@ var mode = "light"; //(themeMode) ? themeMode : 'light';
 var fonts = {
   base: "Open Sans"
 };
-
+ 
 // Colors
 var colors = {
   gray: {
